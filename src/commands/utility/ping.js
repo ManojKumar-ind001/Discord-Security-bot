@@ -11,8 +11,9 @@ module.exports = {
   data: new SlashCommandBuilder().setName('ping').setDescription('Check bot latency'),
   cooldown: 5,
   async execute(interaction, client) {
-    const sent = await interaction.reply({ content: 'Pinging...', fetchReply: true });
-    const rtt = sent.createdTimestamp - interaction.createdTimestamp;
+    const { resource } = await interaction.reply({ content: 'Pinging...', withResponse: true });
+    const sent = resource?.message;
+    const rtt = sent ? (sent.createdTimestamp - interaction.createdTimestamp) : 0;
     const wsp = client.ws.ping;
 
     const container = new ContainerBuilder();
