@@ -48,7 +48,7 @@ module.exports = {
     if (!(await Perm.check(interaction, 'mod'))) return;
     const sub  = interaction.options.getSubcommand();
     const user = interaction.options.getUser('user');
-    if (!user) return interaction.reply({ content: 'Please mention a valid user.', ephemeral: true });
+    if (!user) return interaction.reply({ content: 'Please mention a valid user.', flags: MessageFlags.Ephemeral });
     const data = await GuildModel.get(interaction.guild.id);
 
     if (sub === 'status') {

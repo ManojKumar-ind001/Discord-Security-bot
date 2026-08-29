@@ -1,4 +1,6 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits,
+  MessageFlags,
+} = require('discord.js');
 const V2 = require('../../utils/Embed');
 const Perm = require('../../utils/Permissions');
 
@@ -44,7 +46,7 @@ module.exports = {
     if (!targetChannel || !targetChannel.isTextBased()) {
       return interaction.reply({
         ...V2.reply(V2.error('Invalid Channel', 'Please specify a valid text channel.', client)),
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -59,7 +61,7 @@ module.exports = {
               client
             )
           ),
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
       }
 
@@ -80,7 +82,7 @@ module.exports = {
             client
           )
         ),
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     } catch (err) {
       return interaction.reply({
@@ -91,7 +93,7 @@ module.exports = {
             client
           )
         ),
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
   },

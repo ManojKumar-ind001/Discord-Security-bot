@@ -1,5 +1,7 @@
 
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits,
+  MessageFlags,
+} = require('discord.js');
 const V2 = require('../../utils/Embed');
 const Perm = require('../../utils/Permissions');
 const GuildModel = require('../../models/Guild');
@@ -20,7 +22,7 @@ module.exports = {
       const before = data.warns.length;
       data.warns = data.warns.filter(w => !(w.userId === user.id && w.warnId === wid.toUpperCase()));
       if (data.warns.length === before)
-        return interaction.reply({ ...V2.reply(V2.error('Not Found', `No warning \`${wid}\` found.`, client)), ephemeral: true });
+        return interaction.reply({ ...V2.reply(V2.error('Not Found', `No warning \`${wid}\` found.`, client)), flags: MessageFlags.Ephemeral });
       await GuildModel.save(interaction.guild.id, data);
       await interaction.reply(V2.reply(V2.success('Warning Cleared', `Removed \`${wid}\` from **${user.tag}**.`, client)));
     } else {

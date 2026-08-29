@@ -1,5 +1,7 @@
 
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits,
+  MessageFlags,
+} = require('discord.js');
 const V2 = require('../../utils/Embed');
 const Perm = require('../../utils/Permissions');
 
@@ -15,7 +17,7 @@ module.exports = {
       await ch.permissionOverwrites.edit(interaction.guild.roles.everyone, { SendMessages: null });
       await interaction.reply(V2.reply(V2.success('Channel Unlocked', `🔓 ${ch} is now **unlocked**.`, client)));
     } catch (e) {
-      await interaction.reply({ ...V2.reply(V2.error('Failed', e.message, client)), ephemeral: true });
+      await interaction.reply({ ...V2.reply(V2.error('Failed', e.message, client)), flags: MessageFlags.Ephemeral });
     }
   },
 };

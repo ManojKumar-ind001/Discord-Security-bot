@@ -1,4 +1,6 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits,
+  MessageFlags,
+} = require('discord.js');
 const V2 = require('../../utils/Embed');
 const Logger = require('../../utils/Logger');
 const Perm = require('../../utils/Permissions');
@@ -16,9 +18,9 @@ module.exports = {
     const member = interaction.guild.members.cache.get(user.id);
 
     if (!member)
-      return interaction.reply({ ...V2.reply(V2.error('Not Found', 'Member not in server.', client)), ephemeral: true });
+      return interaction.reply({ ...V2.reply(V2.error('Not Found', 'Member not in server.', client)), flags: MessageFlags.Ephemeral });
     if (!member.kickable)
-      return interaction.reply({ ...V2.reply(V2.error('Cannot Kick', 'I cannot kick this member — they may have a higher role.', client)), ephemeral: true });
+      return interaction.reply({ ...V2.reply(V2.error('Cannot Kick', 'I cannot kick this member — they may have a higher role.', client)), flags: MessageFlags.Ephemeral });
 
     // DM the user before kicking
     try {
@@ -37,7 +39,7 @@ module.exports = {
         `**User:** ${user.tag}\n**Reason:** ${reason}`, client)));
       await Logger.modAction(interaction.guild, 'kick', user, interaction.user, reason);
     } catch (e) {
-      await interaction.reply({ ...V2.reply(V2.error('Kick Failed', e.message, client)), ephemeral: true });
+      await interaction.reply({ ...V2.reply(V2.error('Kick Failed', e.message, client)), flags: MessageFlags.Ephemeral });
     }
   },
 };

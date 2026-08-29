@@ -15,7 +15,7 @@ module.exports = {
   cooldown: 10,
   async execute(interaction, client) {
     if (!(await Perm.check(interaction, 'mod'))) return;
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     const bans = await interaction.guild.bans.fetch();
     if (!bans.size) return interaction.editReply({ content: 'No banned users found in this server.' });

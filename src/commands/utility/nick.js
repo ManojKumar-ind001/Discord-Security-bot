@@ -1,4 +1,6 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits,
+  MessageFlags,
+} = require('discord.js');
 const V2 = require('../../utils/Embed');
 const Perm = require('../../utils/Permissions');
 
@@ -15,7 +17,7 @@ module.exports = {
     const member = interaction.guild.members.cache.get(user.id);
 
     if (!member) {
-      return interaction.reply({ ...V2.reply(V2.error('Not Found', 'Member not found.', client)), ephemeral: true });
+      return interaction.reply({ ...V2.reply(V2.error('Not Found', 'Member not found.', client)), flags: MessageFlags.Ephemeral });
     }
 
     try {
@@ -23,7 +25,7 @@ module.exports = {
       const desc = nick ? `Set nickname of **${user.tag}** to **${nick}**.` : `Reset nickname of **${user.tag}**.`;
       await interaction.reply(V2.reply(V2.success('Nickname Changed', desc, client)));
     } catch (e) {
-      await interaction.reply({ ...V2.reply(V2.error('Failed', e.message, client)), ephemeral: true });
+      await interaction.reply({ ...V2.reply(V2.error('Failed', e.message, client)), flags: MessageFlags.Ephemeral });
     }
   },
 };

@@ -26,7 +26,7 @@ module.exports = {
     const dur = ms(durRaw);
 
     if (!dur || dur < 5000 || dur > 604800000) {
-      return interaction.reply({ content: 'Invalid duration (Min 5s, Max 7 days). Use formats like 60s, 1m, 1h.', ephemeral: true });
+      return interaction.reply({ content: 'Invalid duration (Min 5s, Max 7 days). Use formats like 60s, 1m, 1h.', flags: MessageFlags.Ephemeral });
     }
 
     const opts = [
@@ -93,12 +93,12 @@ module.exports = {
     collector.on('collect', async i => {
       if (i.customId === 'poll_end') {
         if (i.user.id !== interaction.user.id)
-          return i.reply({ content: 'Only the poll creator can end it early.', ephemeral: true });
+          return i.reply({ content: 'Only the poll creator can end it early.', flags: MessageFlags.Ephemeral });
         return collector.stop('manual');
       }
 
       if (voters.has(i.user.id))
-        return i.reply({ content: 'You have already voted in this poll.', ephemeral: true });
+        return i.reply({ content: 'You have already voted in this poll.', flags: MessageFlags.Ephemeral });
 
       const idx = parseInt(i.customId.replace('poll_btn_', ''));
       votes[idx]++;

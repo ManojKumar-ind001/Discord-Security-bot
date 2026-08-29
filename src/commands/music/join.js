@@ -1,4 +1,6 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder,
+  MessageFlags,
+} = require('discord.js');
 const V2 = require('../../utils/Embed');
 
 module.exports = {
@@ -9,7 +11,7 @@ module.exports = {
     if (!voiceChannel) {
       return interaction.reply({
         ...V2.reply(V2.error('Voice Required', 'You must be in a voice channel to use this command.', client)),
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -21,7 +23,7 @@ module.exports = {
     } catch (err) {
       return interaction.reply({
         ...V2.reply(V2.error('Join Error', err.message, client)),
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
   },

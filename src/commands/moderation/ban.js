@@ -1,4 +1,6 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits,
+  MessageFlags,
+} = require('discord.js');
 const V2 = require('../../utils/Embed');
 const Logger = require('../../utils/Logger');
 const Perm = require('../../utils/Permissions');
@@ -18,9 +20,9 @@ module.exports = {
     const member = interaction.guild.members.cache.get(user.id);
 
     if (member && !member.bannable)
-      return interaction.reply({ ...V2.reply(V2.error('Cannot Ban', 'I cannot ban this member — they may have a higher role.', client)), ephemeral: true });
+      return interaction.reply({ ...V2.reply(V2.error('Cannot Ban', 'I cannot ban this member — they may have a higher role.', client)), flags: MessageFlags.Ephemeral });
     if (user.id === interaction.user.id)
-      return interaction.reply({ ...V2.reply(V2.error('Cannot Ban', 'You cannot ban yourself.', client)), ephemeral: true });
+      return interaction.reply({ ...V2.reply(V2.error('Cannot Ban', 'You cannot ban yourself.', client)), flags: MessageFlags.Ephemeral });
 
     // DM the user before banning
     try {
@@ -39,7 +41,7 @@ module.exports = {
         `**User:** ${user.tag}\n**Reason:** ${reason}\n**Messages Deleted:** ${days} days`, client)));
       await Logger.modAction(interaction.guild, 'ban', user, interaction.user, reason, { 'Messages Deleted': `${days} days` });
     } catch (e) {
-      await interaction.reply({ ...V2.reply(V2.error('Ban Failed', e.message, client)), ephemeral: true });
+      await interaction.reply({ ...V2.reply(V2.error('Ban Failed', e.message, client)), flags: MessageFlags.Ephemeral });
     }
   },
 };

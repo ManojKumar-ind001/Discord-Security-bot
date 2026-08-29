@@ -1,5 +1,7 @@
 
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits,
+  MessageFlags,
+} = require('discord.js');
 const V2 = require('../../utils/Embed');
 const Perm = require('../../utils/Permissions');
 
@@ -13,7 +15,7 @@ module.exports = {
     if (!(await Perm.check(interaction, 'mod'))) return;
     const amt  = interaction.options.getInteger('amount');
     const user = interaction.options.getUser('user');
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
     try {
       let msgs = await interaction.channel.messages.fetch({ limit: 100 });
       if (user) msgs = msgs.filter(m => m.author.id === user.id);

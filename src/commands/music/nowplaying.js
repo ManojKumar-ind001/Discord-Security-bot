@@ -10,7 +10,7 @@ module.exports = {
     if (!player || !player.queue.current) {
       return interaction.reply({
         ...V2.reply(V2.error('Not Playing', 'There is no track currently playing in this server.', client)),
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 

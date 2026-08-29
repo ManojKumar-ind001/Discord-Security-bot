@@ -1,4 +1,6 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder,
+  MessageFlags,
+} = require('discord.js');
 const V2 = require('../../utils/Embed');
 
 module.exports = {
@@ -9,7 +11,7 @@ module.exports = {
     if (!player) {
       return interaction.reply({
         ...V2.reply(V2.error('Not Playing', 'There is no active music player in this server.', client)),
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -17,7 +19,7 @@ module.exports = {
     if (!voiceChannel || voiceChannel.id !== player.voiceId) {
       return interaction.reply({
         ...V2.reply(V2.error('Voice Mismatch', 'You must be in the same voice channel as the bot.', client)),
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 

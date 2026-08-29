@@ -1,4 +1,4 @@
-const { Events } = require('discord.js');
+const { Events, MessageFlags } = require('discord.js');
 const V2 = require('../utils/Embed');
 const chalk = require('chalk');
 const cool = new Map();
@@ -19,7 +19,7 @@ module.exports = {
         if (left > 0) {
           return interaction.reply({
             ...V2.reply(V2.warning('Cooldown', `Wait **${left.toFixed(1)}s** before using this again.`, client)),
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
           });
         }
       }
@@ -33,7 +33,7 @@ module.exports = {
         console.error(chalk.red('[ERR]', cmd.data.name, e.message));
         const r = {
           ...V2.reply(V2.error('Error', 'Something went wrong executing this command.', client)),
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         };
         if (interaction.replied || interaction.deferred) await interaction.followUp(r);
         else await interaction.reply(r);
@@ -41,7 +41,7 @@ module.exports = {
       return;
     }
 
-    // Handle Slash Command Autocomplete (Native Discord Autocomplete)
+    // Handle Slash Command Autocomplete
     if (interaction.isAutocomplete()) {
       const cmd = client.slashCommands.get(interaction.commandName);
       if (!cmd || !cmd.autocomplete) return;
@@ -64,7 +64,7 @@ module.exports = {
         if (!player) {
           return interaction.reply({
             content: 'No active music player found for this server.',
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
           });
         }
 
@@ -72,7 +72,7 @@ module.exports = {
         if (!voiceChannel || voiceChannel.id !== player.voiceId) {
           return interaction.reply({
             content: 'You must be in the same voice channel as the bot to use player controls.',
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
           });
         }
 
@@ -107,7 +107,7 @@ module.exports = {
           } else {
             await interaction.reply({
               content: 'No previous track available.',
-              ephemeral: true,
+              flags: MessageFlags.Ephemeral,
             });
           }
           return;
@@ -135,7 +135,7 @@ module.exports = {
           player.destroy();
           await interaction.reply({
             content: 'Playback stopped and player disconnected.',
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
           });
           return;
         }
@@ -143,7 +143,7 @@ module.exports = {
 
       // Collectors handle component interactions locally; fallback if expired
       if (!interaction.replied && !interaction.deferred) {
-        // Safe no-op or handled by collectors
+        // Safe no-op — handled by local collectors (help menu, poll, etc.)
       }
     }
   },

@@ -14,7 +14,7 @@ module.exports = {
     if (!player || (!player.queue.current && player.queue.length === 0)) {
       return interaction.reply({
         ...V2.reply(V2.info('Queue Empty', 'The music queue is currently empty.', client)),
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -39,12 +39,12 @@ module.exports = {
     collector.on('collect', async i => {
       const curPlayer = client.musicManager?.kazagumo?.players?.get(interaction.guildId);
       if (!curPlayer) {
-        return i.reply({ content: 'Queue is no longer active.', ephemeral: true });
+        return i.reply({ content: 'Queue is no longer active.', flags: MessageFlags.Ephemeral });
       }
 
       if (i.customId === 'queue_clear') {
         curPlayer.queue.clear();
-        await i.reply({ content: 'Cleared upcoming queue.', ephemeral: true });
+        await i.reply({ content: 'Cleared upcoming queue.', flags: MessageFlags.Ephemeral });
         queueData = MusicUI.queue(curPlayer, 1);
         buttons = MusicUI.queueButtons(1, 1);
         return interaction.editReply({

@@ -277,7 +277,7 @@ module.exports = {
               if (threshold < 1 || threshold > 20 || interval < 1 || interval > 60 || !['timeout', 'delete'].includes(action)) {
                 return modalSubmit.reply({
                   ...V2.reply(V2.error('Invalid Input', 'Threshold: 1-20, Interval: 1-60s, Action: timeout/delete', client)),
-                  ephemeral: true,
+                  flags: MessageFlags.Ephemeral,
                 });
               }
 
@@ -288,7 +288,7 @@ module.exports = {
 
               await modalSubmit.reply({
                 ...V2.reply(V2.success('Settings Saved', `Anti-Spam: ${threshold} messages in ${interval}s → ${action}`, client)),
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
               });
 
               const freshData = await GuildModel.get(interaction.guild.id);
@@ -352,7 +352,7 @@ module.exports = {
               if (threshold < 1 || threshold > 10 || !['timeout', 'delete'].includes(action)) {
                 return modalSubmit.reply({
                   ...V2.reply(V2.error('Invalid Input', 'Threshold: 1-10, Action: timeout/delete', client)),
-                  ephemeral: true,
+                  flags: MessageFlags.Ephemeral,
                 });
               }
 
@@ -363,7 +363,7 @@ module.exports = {
 
               await modalSubmit.reply({
                 ...V2.reply(V2.success('Settings Saved', `Anti-Links: ${threshold} blocked links → ${action}\nBlocked: ${domains.length} domains`, client)),
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
               });
 
               const freshData = await GuildModel.get(interaction.guild.id);
@@ -427,7 +427,7 @@ module.exports = {
               if (threshold < 1 || threshold > 20 || !['timeout', 'delete'].includes(action)) {
                 return modalSubmit.reply({
                   ...V2.reply(V2.error('Invalid Input', 'Threshold: 1-20, Action: timeout/delete', client)),
-                  ephemeral: true,
+                  flags: MessageFlags.Ephemeral,
                 });
               }
 
@@ -438,7 +438,7 @@ module.exports = {
 
               await modalSubmit.reply({
                 ...V2.reply(V2.success('Settings Saved', `Anti-Mention: ${threshold} mentions → ${action}\nProtected: ${roles.length || 'All'} roles`, client)),
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
               });
 
               const freshData = await GuildModel.get(interaction.guild.id);
@@ -454,7 +454,7 @@ module.exports = {
           } else {
             await i.reply({
               ...V2.reply(V2.info('Configuration', `${module} has no additional settings to configure.`, client)),
-              ephemeral: true,
+              flags: MessageFlags.Ephemeral,
             });
             return;
           }

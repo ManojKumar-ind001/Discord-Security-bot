@@ -61,7 +61,7 @@ module.exports = {
       const oldURL = oldAvatar
         ? `https://cdn.discordapp.com/avatars/${oldMember.user.id}/${oldAvatar}.${oldAvatar.startsWith('a_') ? 'gif' : 'png'}?size=512`
         : oldMember.user.defaultAvatarURL;
-      const newURL = newMember.user.displayAvatarURL({ dynamic: true, size: 512 });
+      const newURL = newMember.user.displayAvatarURL({ forceStatic: false, size: 512 });
       await Logger.avatarChanged(guild, newMember.user, oldURL, newURL);
     }
 

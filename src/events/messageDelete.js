@@ -6,9 +6,8 @@ module.exports = {
   name: Events.MessageDelete,
   async execute(message, client) {
     if (!message.guild) return;
-    if (message.author?.bot) return;
 
-    // Step 1: Check manual memory cache
+    // Step 1: Enrich from manual memory cache
     const cached = msgCache.get(message.id);
     if (cached) {
       if (!message.author || !message.author.id) {
@@ -19,7 +18,7 @@ module.exports = {
           bot:      false,
         };
       }
-      if (cached.content !== null && cached.content !== undefined) {
+      if (cached.content !== null && cached.content !== undefined && !message.content) {
         message.content = cached.content;
       }
       if (!message.channel?.name && cached.channelName) {
@@ -34,23 +33,26 @@ module.exports = {
       msgCache.delete(message.id);
     }
 
-    // Step 2: Fetch channel if partial
+    // Step 2: Skip if author is a bot (only after cache restore)
+    if (message.author?.bot) return;
+
+    // Step 3: Fetch channel if partial
     if (message.channel?.partial) {
       try { await message.channel.fetch(); } catch {}
     }
 
-    // Step 3: If still partial message, try Discord fetch
+    // Step 4: Try to fetch partial message (may fail if message was in admin channel)
     if (message.partial) {
       try { await message.fetch(); } catch {}
     }
 
-    // Step 4: If still no author, search audit log
+    // Step 5: If still no author, try audit log lookup (admin channels / uncached)
     if (!message.author || !message.author.id) {
       try {
         await new Promise(r => setTimeout(r, 800));
         const audit = await message.guild.fetchAuditLogs({ limit: 5, type: AuditLogEvent.MessageDelete });
         for (const entry of audit.entries.values()) {
-          if (Date.now() - entry.createdTimestamp < 12000 && (entry.target?.id === message.author?.id || entry.extra?.channel?.id === message.channelId)) {
+          if (Date.now() - entry.createdTimestamp < 15000) {
             if (entry.target) {
               message.author = {
                 id:       entry.target.id,
@@ -58,16 +60,19 @@ module.exports = {
                 username: entry.target.username || 'Unknown',
                 bot:      entry.target.bot || false,
               };
-              break;
             }
+            break;
           }
         }
       } catch (e) {
-        console.error('[MSG DELETE] Audit log lookup:', e.message);
+        console.error('[MSG DELETE] Audit log lookup failed:', e.message);
       }
     }
 
-    // Always log the deleted message even if author was uncached
+    // Skip if author is bot (discovered via audit log)
+    if (message.author?.bot) return;
+
+    // Always log the deleted message (even if author remained uncached)
     await Logger.messageDeleted(message.guild, message);
   },
 };

@@ -1,5 +1,7 @@
 
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits,
+  MessageFlags,
+} = require('discord.js');
 const V2 = require('../../utils/Embed');
 const Perm = require('../../utils/Permissions');
 
@@ -18,7 +20,7 @@ module.exports = {
       await interaction.reply(V2.reply(V2.success('Channel Locked',
         `🔒 ${ch} is now **locked**.\n**Reason:** ${reason}`, client)));
     } catch (e) {
-      await interaction.reply({ ...V2.reply(V2.error('Failed', e.message, client)), ephemeral: true });
+      await interaction.reply({ ...V2.reply(V2.error('Failed', e.message, client)), flags: MessageFlags.Ephemeral });
     }
   },
 };

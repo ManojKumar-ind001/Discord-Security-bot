@@ -34,12 +34,12 @@ module.exports = {
 
       await interaction.reply({
         ...V2.reply(V2.success('Message Sent', `Message sent to ${ch}.`, client)),
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     } catch (e) {
       await interaction.reply({
         ...V2.reply(V2.error('Failed to Send', e.message, client)),
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
   },

@@ -1,5 +1,7 @@
 
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits,
+  MessageFlags,
+} = require('discord.js');
 const ms = require('ms');
 const V2 = require('../../utils/Embed');
 const Logger = require('../../utils/Logger');
@@ -20,15 +22,15 @@ module.exports = {
     const dur    = ms(durStr);
 
     if (!dur || dur > ms('28d'))
-      return interaction.reply({ ...V2.reply(V2.error('Invalid Duration', 'Use 10m, 1h, 1d. Max 28 days.', client)), ephemeral: true });
+      return interaction.reply({ ...V2.reply(V2.error('Invalid Duration', 'Use 10m, 1h, 1d. Max 28 days.', client)), flags: MessageFlags.Ephemeral });
 
     const member = await interaction.guild.members.fetch(user.id).catch(() => null);
     if (!member)
-      return interaction.reply({ ...V2.reply(V2.error('Not Found', 'Member not found in this server.', client)), ephemeral: true });
+      return interaction.reply({ ...V2.reply(V2.error('Not Found', 'Member not found in this server.', client)), flags: MessageFlags.Ephemeral });
     if (!member.moderatable)
-      return interaction.reply({ ...V2.reply(V2.error('Permission Denied', 'I cannot mute this user. They might have a higher role than me.', client)), ephemeral: true });
+      return interaction.reply({ ...V2.reply(V2.error('Permission Denied', 'I cannot mute this user. They might have a higher role than me.', client)), flags: MessageFlags.Ephemeral });
     if (member.roles.highest.position >= interaction.member.roles.highest.position && interaction.guild.ownerId !== interaction.user.id)
-      return interaction.reply({ ...V2.reply(V2.error('Permission Denied', 'You cannot mute someone with a higher or equal role.', client)), ephemeral: true });
+      return interaction.reply({ ...V2.reply(V2.error('Permission Denied', 'You cannot mute someone with a higher or equal role.', client)), flags: MessageFlags.Ephemeral });
 
     try {
       await member.timeout(dur, `Muted by ${interaction.user.tag}: ${reason}`);
@@ -37,7 +39,7 @@ module.exports = {
       await Logger.modAction(interaction.guild, 'mute', member, interaction.user, reason, { Duration: durStr });
     } catch (e) {
       console.error(e);
-      await interaction.reply({ ...V2.reply(V2.error('Mute Failed', 'Something went wrong while trying to timeout the user.', client)), ephemeral: true });
+      await interaction.reply({ ...V2.reply(V2.error('Mute Failed', 'Something went wrong while trying to timeout the user.', client)), flags: MessageFlags.Ephemeral });
     }
   },
 };

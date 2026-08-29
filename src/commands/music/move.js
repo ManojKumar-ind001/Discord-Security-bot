@@ -1,4 +1,6 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder,
+  MessageFlags,
+} = require('discord.js');
 const V2 = require('../../utils/Embed');
 
 module.exports = {
@@ -24,7 +26,7 @@ module.exports = {
     if (!player || player.queue.length <= 1) {
       return interaction.reply({
         ...V2.reply(V2.error('Cannot Move', 'There must be at least 2 tracks in the queue to move items.', client)),
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -32,7 +34,7 @@ module.exports = {
     if (!voiceChannel || voiceChannel.id !== player.voiceId) {
       return interaction.reply({
         ...V2.reply(V2.error('Voice Mismatch', 'You must be in the same voice channel as the bot.', client)),
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -44,7 +46,7 @@ module.exports = {
         ...V2.reply(
           V2.error('Invalid Positions', `Both positions must be valid numbers between \`1\` and \`${player.queue.length}\`.`, client)
         ),
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 

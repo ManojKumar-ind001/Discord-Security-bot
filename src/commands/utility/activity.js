@@ -1,4 +1,6 @@
-const { SlashCommandBuilder, PermissionFlagsBits, ActivityType } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, ActivityType,
+  MessageFlags,
+} = require('discord.js');
 const V2 = require('../../utils/Embed');
 const Perm = require('../../utils/Permissions');
 const BotConfig = require('../../models/BotConfig');
@@ -54,7 +56,7 @@ module.exports = {
         `**Type:** ${act.label}\n**Message:** ${msg}\n**Status:** ${statusLabel}`,
         client
       )),
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   },
 };

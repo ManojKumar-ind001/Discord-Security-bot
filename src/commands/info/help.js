@@ -199,7 +199,7 @@ module.exports = {
 
     const collector = interaction.channel.createMessageComponentCollector({
       filter: i => i.customId === 'help_menu' && i.user.id === interaction.user.id,
-      time: 300000,
+      time: 600000, // 10 minutes
     });
 
     collector.on('collect', async i => {
@@ -211,8 +211,7 @@ module.exports = {
       });
     });
 
-    collector.on('end', () => {
-      interaction.editReply({ components: [getHomeContainer()] }).catch(() => {});
-    });
+    // On timeout, just silently expire — do NOT strip the dropdown
+    collector.on('end', () => {});
   },
 };
