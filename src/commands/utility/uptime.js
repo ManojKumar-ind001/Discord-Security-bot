@@ -23,8 +23,8 @@ module.exports = {
 
     container.addTextDisplayComponents(
       new TextDisplayBuilder().setContent(
-        `**Online Duration:** \`${d}d ${h}h ${m}m ${s}s\`\n` +
-        `**Started:** <t:${Math.floor((Date.now() - u * 1000) / 1000)}:F>`
+        `> **Online Duration:** \`${d}d ${h}h ${m}m ${s}s\`\n` +
+        `> **Started:** <t:${Math.floor((Date.now() - u * 1000) / 1000)}:F>`
       )
     );
 

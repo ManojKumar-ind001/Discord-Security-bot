@@ -1,4 +1,3 @@
-
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const V2 = require('../../utils/Embed');
 const Logger = require('../../utils/Logger');
@@ -22,6 +21,17 @@ module.exports = {
       return interaction.reply({ ...V2.reply(V2.error('Cannot Ban', 'I cannot ban this member — they may have a higher role.', client)), ephemeral: true });
     if (user.id === interaction.user.id)
       return interaction.reply({ ...V2.reply(V2.error('Cannot Ban', 'You cannot ban yourself.', client)), ephemeral: true });
+
+    // DM the user before banning
+    try {
+      await user.send({
+        ...V2.reply(V2.warning(
+          `You have been banned from ${interaction.guild.name}`,
+          `> **Reason:** ${reason}\n> **Server:** ${interaction.guild.name}\n> **Moderator:** ${interaction.user.tag}`,
+          client
+        )),
+      });
+    } catch {}
 
     try {
       await interaction.guild.bans.create(user, { reason: `${interaction.user.tag}: ${reason}`, deleteMessageDays: days });

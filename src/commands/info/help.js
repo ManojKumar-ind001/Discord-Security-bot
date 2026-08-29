@@ -93,13 +93,14 @@ module.exports = {
 
       const section = new SectionBuilder()
         .addTextDisplayComponents(
-          new TextDisplayBuilder().setContent('**Advanced Discord Security & Moderation Bot**\nSelect a category from the dropdown below to view commands.'),
+          new TextDisplayBuilder().setContent('> **Advanced Discord Security & Moderation Bot**'),
+          new TextDisplayBuilder().setContent('> Select a category from the dropdown below to view commands.'),
           new TextDisplayBuilder().setContent(
-            `\n**Total Commands:** \`${totalCmds}\`\n` +
-            `**Moderation:** \`${commands.moderation.cmds.length}\` commands\n` +
-            `**Security:** \`${commands.security.cmds.length}\` commands\n` +
-            `**Info:** \`${commands.info.cmds.length}\` commands\n` +
-            `**Utility:** \`${commands.utility.cmds.length}\` commands`
+            `\n> **Total Commands:** \`${totalCmds}\`\n` +
+            `> **Moderation:** \`${commands.moderation.cmds.length}\` commands\n` +
+            `> **Security:** \`${commands.security.cmds.length}\` commands\n` +
+            `> **Info:** \`${commands.info.cmds.length}\` commands\n` +
+            `> **Utility:** \`${commands.utility.cmds.length}\` commands`
           ),
         )
         .setThumbnailAccessory(new ThumbnailBuilder({ media: { url: client.user.displayAvatarURL({ size: 256 }) } }));
@@ -117,7 +118,7 @@ module.exports = {
       container.addTextDisplayComponents(new TextDisplayBuilder().setContent(`## ${cat.label}`));
       container.addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small));
 
-      const cmdLines = cat.cmds.map(c => `**\`${c.cmd}\`** — ${c.desc}`).join('\n');
+      const cmdLines = cat.cmds.map(c => `> **\`${c.cmd}\`** — ${c.desc}`).join('\n');
       container.addTextDisplayComponents(new TextDisplayBuilder().setContent(cmdLines));
 
       container.addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small));

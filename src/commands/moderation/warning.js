@@ -65,8 +65,8 @@ module.exports = {
 
       const section = new SectionBuilder()
         .addTextDisplayComponents(
-          new TextDisplayBuilder().setContent(`**Total Warnings:** ${warns.length}`),
-          new TextDisplayBuilder().setContent(`**User:** <@${user.id}>`),
+          new TextDisplayBuilder().setContent(`> **Total Warnings:** ${warns.length}`),
+          new TextDisplayBuilder().setContent(`> **User:** <@${user.id}>`),
         )
         .setThumbnailAccessory(new ThumbnailBuilder({ media: { url: user.displayAvatarURL({ size: 256 }) } }));
       container.addSectionComponents(section);
@@ -75,7 +75,7 @@ module.exports = {
 
       warns.slice(-10).forEach((w, i) => {
         container.addTextDisplayComponents(
-          new TextDisplayBuilder().setContent(`**${i + 1}.** \`${w.warnId}\` — ${w.reason} (<@${w.moderatorId}>)`)
+          new TextDisplayBuilder().setContent(`> **${i + 1}.** \`${w.warnId}\` — ${w.reason} (<@${w.moderatorId}>)`)
         );
       });
 
@@ -102,8 +102,8 @@ module.exports = {
         .addTextDisplayComponents(new TextDisplayBuilder().setContent(`## You were warned in ${interaction.guild.name}`))
         .addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small))
         .addTextDisplayComponents(
-          new TextDisplayBuilder().setContent(`**Reason:** ${reason}`),
-          new TextDisplayBuilder().setContent('Please ensure to follow the server rules to avoid further actions.')
+          new TextDisplayBuilder().setContent(`> **Reason:** ${reason}`),
+          new TextDisplayBuilder().setContent('> Please ensure to follow the server rules to avoid further actions.')
         )
         .addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small))
         .addTextDisplayComponents(new TextDisplayBuilder().setContent('-# GAMERZ WORKSHOP'));

@@ -41,14 +41,11 @@ module.exports = {
       return;
     }
 
-    // Handle Button Interactions (Suggestion Buttons, etc.)
+    // Handle Button Interactions
     if (interaction.isButton()) {
-      const id = interaction.customId;
-
-      // Suggestion Buttons
-      if (id === 'sug_up' || id === 'sug_down') {
-        await interaction.reply({ content: '✅ Your reaction has been recorded!', ephemeral: true });
-        return;
+      // Collectors handle component interactions locally; fallback if expired
+      if (!interaction.replied && !interaction.deferred) {
+        // Safe no-op or handled by collectors
       }
     }
   },

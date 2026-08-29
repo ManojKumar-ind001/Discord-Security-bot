@@ -28,7 +28,7 @@ function txt(content) {
 }
 
 /**
- * Build a clean Container with a title, separator, body lines, and footer.
+ * Build a clean Container with a title, separator, quote body, footer separator, and footer.
  */
 function buildContainer(_color, titleLine, bodyLines = [], thumb = null, extra = []) {
   const container = new ContainerBuilder();
@@ -37,18 +37,21 @@ function buildContainer(_color, titleLine, bodyLines = [], thumb = null, extra =
   container.addTextDisplayComponents(txt(titleLine));
   container.addSeparatorComponents(sep(true));
 
+  // Format body lines with blockquote if not already formatted
+  const formattedBody = bodyLines.map(l => (l.startsWith('>') || l.startsWith('#') ? l : `> ${l}`));
+
   if (thumb) {
     const section = new SectionBuilder()
-      .addTextDisplayComponents(...bodyLines.map(l => txt(l)))
+      .addTextDisplayComponents(...formattedBody.map(l => txt(l)))
       .setThumbnailAccessory(new ThumbnailBuilder({ media: { url: thumb } }));
     container.addSectionComponents(section);
   } else {
-    bodyLines.forEach(l => container.addTextDisplayComponents(txt(l)));
+    formattedBody.forEach(l => container.addTextDisplayComponents(txt(l)));
   }
 
   if (extra.length) {
     container.addSeparatorComponents(sep(true));
-    extra.forEach(l => container.addTextDisplayComponents(txt(l)));
+    extra.forEach(l => container.addTextDisplayComponents(txt(l.startsWith('>') || l.startsWith('#') ? l : `> ${l}`)));
   }
 
   // Footer with divider line above it

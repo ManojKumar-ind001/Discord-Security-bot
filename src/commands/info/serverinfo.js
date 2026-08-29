@@ -23,10 +23,10 @@ module.exports = {
     const iconUrl = g.iconURL({ size: 256 }) || client.user.displayAvatarURL({ size: 256 });
     const section = new SectionBuilder()
       .addTextDisplayComponents(
-        new TextDisplayBuilder().setContent(`**Server ID:** \`${g.id}\``),
-        new TextDisplayBuilder().setContent(`**Owner:** <@${g.ownerId}>`),
-        new TextDisplayBuilder().setContent(`**Members:** \`${g.memberCount}\``),
-        new TextDisplayBuilder().setContent(`**Channels:** \`${g.channels.cache.size}\``),
+        new TextDisplayBuilder().setContent(`> **Server ID:** \`${g.id}\``),
+        new TextDisplayBuilder().setContent(`> **Owner:** <@${g.ownerId}>`),
+        new TextDisplayBuilder().setContent(`> **Members:** \`${g.memberCount}\``),
+        new TextDisplayBuilder().setContent(`> **Channels:** \`${g.channels.cache.size}\``),
       )
       .setThumbnailAccessory(new ThumbnailBuilder({ media: { url: iconUrl } }));
     container.addSectionComponents(section);
@@ -35,11 +35,11 @@ module.exports = {
 
     container.addTextDisplayComponents(
       new TextDisplayBuilder().setContent(
-        `**Created:** <t:${Math.floor(g.createdTimestamp / 1000)}:F>\n` +
-        `**Roles:** \`${g.roles.cache.size}\`\n` +
-        `**Emojis:** \`${g.emojis.cache.size}\`\n` +
-        `**Verification:** \`${g.verificationLevel}\`\n` +
-        `**Boost Tier:** \`Tier ${g.premiumTier}\` (${g.premiumSubscriptionCount || 0} boosts)`
+        `> **Created:** <t:${Math.floor(g.createdTimestamp / 1000)}:F>\n` +
+        `> **Roles:** \`${g.roles.cache.size}\`\n` +
+        `> **Emojis:** \`${g.emojis.cache.size}\`\n` +
+        `> **Verification:** \`${g.verificationLevel}\`\n` +
+        `> **Boost Tier:** \`Tier ${g.premiumTier}\` (${g.premiumSubscriptionCount || 0} boosts)`
       )
     );
 

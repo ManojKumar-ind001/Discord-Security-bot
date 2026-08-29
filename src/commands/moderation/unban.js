@@ -1,4 +1,3 @@
-
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const V2 = require('../../utils/Embed');
 const Logger = require('../../utils/Logger');
@@ -11,8 +10,10 @@ module.exports = {
     .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
   cooldown: 5,
   async execute(interaction, client) {
-    await interaction.deferReply();
+    // Check permission BEFORE deferring so we don't expose the interaction
     if (!(await Perm.check(interaction, 'mod'))) return;
+
+    await interaction.deferReply();
 
     const uid    = interaction.options.getString('userid').trim();
     const reason = interaction.options.getString('reason') || 'No reason provided';

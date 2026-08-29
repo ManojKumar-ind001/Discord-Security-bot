@@ -32,18 +32,18 @@ module.exports = {
     if (!data.adminRoles) data.adminRoles = [];
 
     if (sub === 'view') {
-      const mods   = data.modRoles.length   > 0 ? data.modRoles.map(r => `<@&${r}>`).join('\n')   : 'None Configured';
-      const admins = data.adminRoles.length > 0 ? data.adminRoles.map(r => `<@&${r}>`).join('\n') : 'None Configured';
+      const mods   = data.modRoles.length   > 0 ? data.modRoles.map(r => `<@&${r}>`).join('\n> ')   : 'None Configured';
+      const admins = data.adminRoles.length > 0 ? data.adminRoles.map(r => `<@&${r}>`).join('\n> ') : 'None Configured';
 
       const container = new ContainerBuilder();
       container.addTextDisplayComponents(new TextDisplayBuilder().setContent('## Role Authorization'));
-      container.addTextDisplayComponents(new TextDisplayBuilder().setContent('Roles authorized to use the bot\'s Admin and Mod commands.'));
+      container.addTextDisplayComponents(new TextDisplayBuilder().setContent('> Roles authorized to use the bot\'s Admin and Mod commands.'));
       container.addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small));
 
       const section = new SectionBuilder()
         .addTextDisplayComponents(
-          new TextDisplayBuilder().setContent(`**Admin Roles:**\n${admins}`),
-          new TextDisplayBuilder().setContent(`\n**Mod Roles:**\n${mods}`),
+          new TextDisplayBuilder().setContent(`> **Admin Roles:**\n> ${admins}`),
+          new TextDisplayBuilder().setContent(`> **Mod Roles:**\n> ${mods}`),
         )
         .setThumbnailAccessory(new ThumbnailBuilder({ media: { url: client.user.displayAvatarURL({ size: 256 }) } }));
       container.addSectionComponents(section);

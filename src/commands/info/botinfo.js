@@ -27,10 +27,10 @@ module.exports = {
 
     const section = new SectionBuilder()
       .addTextDisplayComponents(
-        new TextDisplayBuilder().setContent(`**Bot Name:** \`${client.user.tag}\``),
-        new TextDisplayBuilder().setContent(`**Bot ID:** \`${client.user.id}\``),
-        new TextDisplayBuilder().setContent(`**Servers:** \`${client.guilds.cache.size}\``),
-        new TextDisplayBuilder().setContent(`**Users:** \`${client.users.cache.size}\``),
+        new TextDisplayBuilder().setContent(`> **Bot Name:** \`${client.user.tag}\``),
+        new TextDisplayBuilder().setContent(`> **Bot ID:** \`${client.user.id}\``),
+        new TextDisplayBuilder().setContent(`> **Servers:** \`${client.guilds.cache.size}\``),
+        new TextDisplayBuilder().setContent(`> **Users:** \`${client.users.cache.size}\``),
       )
       .setThumbnailAccessory(new ThumbnailBuilder({ media: { url: client.user.displayAvatarURL({ size: 256 }) } }));
     container.addSectionComponents(section);
@@ -39,12 +39,12 @@ module.exports = {
 
     container.addTextDisplayComponents(
       new TextDisplayBuilder().setContent(
-        `**Slash Commands:** \`${client.slashCommands.size}\`\n` +
-        `**Uptime:** \`${days}d ${hrs}h ${mins}m ${secs}s\`\n` +
-        `**Latency:** \`${client.ws.ping}ms\`\n` +
-        `**Memory:** \`${(mem.heapUsed / 1024 / 1024).toFixed(2)} MB\`\n` +
-        `**discord.js:** \`v${djsVer}\`\n` +
-        `**Node.js:** \`${process.version}\``
+        `> **Slash Commands:** \`${client.slashCommands.size}\`\n` +
+        `> **Uptime:** \`${days}d ${hrs}h ${mins}m ${secs}s\`\n` +
+        `> **Latency:** \`${client.ws.ping}ms\`\n` +
+        `> **Memory:** \`${(mem.heapUsed / 1024 / 1024).toFixed(2)} MB\`\n` +
+        `> **discord.js:** \`v${djsVer}\`\n` +
+        `> **Node.js:** \`${process.version}\``
       )
     );
 

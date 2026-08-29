@@ -14,6 +14,7 @@ const GuildModel = require('../models/Guild');
 async function getChannel(guild, type) {
   try {
     const d = await GuildModel.get(guild.id);
+    // Primary channel for type, fallback to general audit channel if not specifically configured
     const id = d.logChannels?.[type] || d.logChannels?.audit;
     if (!id) return null;
     const ch = guild.channels.cache.get(id) || await guild.channels.fetch(id).catch(() => null);
@@ -33,7 +34,7 @@ function txt(content) {
 }
 
 /**
- * Build a clean, modern log container.
+ * Build a clean log container with blockquote formatting and footer divider.
  */
 function logContainer(_color, titleLine, fields, thumbURL = null) {
   const c = new ContainerBuilder();
@@ -42,9 +43,11 @@ function logContainer(_color, titleLine, fields, thumbURL = null) {
   c.addTextDisplayComponents(txt(titleLine));
   c.addSeparatorComponents(sep());
 
+  const formattedFields = fields.map(f => (f.startsWith('>') ? f : `> ${f}`));
+
   if (thumbURL) {
-    const sectionFields = fields.slice(0, Math.min(4, fields.length));
-    const restFields    = fields.slice(sectionFields.length);
+    const sectionFields = formattedFields.slice(0, Math.min(4, formattedFields.length));
+    const restFields    = formattedFields.slice(sectionFields.length);
 
     const section = new SectionBuilder()
       .addTextDisplayComponents(...sectionFields.map(f => txt(f)))
@@ -56,7 +59,7 @@ function logContainer(_color, titleLine, fields, thumbURL = null) {
       restFields.forEach(f => c.addTextDisplayComponents(txt(f)));
     }
   } else {
-    fields.forEach(f => c.addTextDisplayComponents(txt(f)));
+    formattedFields.forEach(f => c.addTextDisplayComponents(txt(f)));
   }
 
   // Divider above footer
@@ -74,6 +77,19 @@ async function send(ch, container) {
   }
 }
 
+// ─── Audit log executor helper ───────────────────────────────────────────
+async function getExecutor(guild, type, targetId, maxAge = 5000) {
+  try {
+    await new Promise(r => setTimeout(r, 1000));
+    const logs = await guild.fetchAuditLogs({ type, limit: 1 });
+    const entry = logs.entries.first();
+    if (!entry) return null;
+    if (targetId && entry.target?.id !== targetId) return null;
+    if (Date.now() - entry.createdTimestamp > maxAge) return null;
+    return entry.executor;
+  } catch { return null; }
+}
+
 // ─── Timestamp helper ────────────────────────────────────────────────────
 function ts(ms = Date.now()) { return `<t:${Math.floor(ms / 1000)}:F>`; }
 
@@ -85,7 +101,7 @@ const L = {
     const mTag = member?.user?.tag || member?.displayName || member?.id || 'Unknown';
     const thumb = member?.user?.displayAvatarURL?.({ size: 256 }) || null;
     await send(ch, logContainer(null, '## Role Added', [
-      `**Member:** <@${member?.id}> (${mTag})`,
+      `**Member:** <@${member?.id}> **(${mTag})**`,
       `**Role:** ${role} \`${role.name}\``,
       `**Role ID:** \`${role.id}\``,
       `**Executor:** ${exec ? `<@${exec.id}> (${exec.tag})` : 'Unknown'}`,
@@ -99,7 +115,7 @@ const L = {
     const mTag = member?.user?.tag || member?.displayName || member?.id || 'Unknown';
     const thumb = member?.user?.displayAvatarURL?.({ size: 256 }) || null;
     await send(ch, logContainer(null, '## Role Removed', [
-      `**Member:** <@${member?.id}> (${mTag})`,
+      `**Member:** <@${member?.id}> **(${mTag})**`,
       `**Role:** ${role} \`${role.name}\``,
       `**Role ID:** \`${role.id}\``,
       `**Executor:** ${exec ? `<@${exec.id}> (${exec.tag})` : 'Unknown'}`,
@@ -113,14 +129,14 @@ const L = {
     const user = member?.user || member;
     const age = user?.createdTimestamp ? Math.floor((Date.now() - user.createdTimestamp) / 86400000) : 'Unknown';
     const fields = [
-      `**User:** <@${user?.id}> (${user?.tag || user?.username || 'Unknown'}) joined the server.`,
+      `**User:** <@${user?.id}> **(${user?.tag || user?.username || 'Unknown'})** joined the server.`,
       `**User ID:** \`${user?.id}\``,
       `**Account Age:** ${age} days`,
       `**Member Count:** ${guild.memberCount}`,
       `**Account Created:** ${user?.createdTimestamp ? ts(user.createdTimestamp) : 'Unknown'}`,
       `**Joined At:** ${ts()}`,
     ];
-    if (typeof age === 'number' && age < 7) fields.push(`**Notice:** New Account — Only ${age} days old.`);
+    if (typeof age === 'number' && age < 7) fields.push(`**Notice:** New Account — Only **${age} days** old.`);
     const thumb = user?.displayAvatarURL?.({ size: 256 }) || null;
     await send(ch, logContainer(null, '## Member Joined', fields, thumb));
   },
@@ -131,7 +147,7 @@ const L = {
     const roles = member?.roles?.cache?.filter(r => r.id !== guild.id).map(r => r.toString()).join(', ') || 'None';
     const thumb = user?.displayAvatarURL?.({ size: 256 }) || null;
     await send(ch, logContainer(null, '## Member Left', [
-      `**User:** ${user?.tag || user?.username || 'Unknown'} left the server.`,
+      `**User:** **${user?.tag || user?.username || 'Unknown'}** left the server.`,
       `**User ID:** \`${user?.id}\``,
       `**Member Count:** ${guild.memberCount}`,
       `**Left At:** ${ts()}`,
@@ -152,21 +168,21 @@ const L = {
       const audit = await guild.fetchAuditLogs({ limit: 5, type: AuditLogEvent.MessageDelete });
       for (const entry of audit.entries.values()) {
         if (Date.now() - entry.createdTimestamp < 12000 && (entry.target?.id === message.author?.id || entry.extra?.channel?.id === channelId)) {
-          executor = `<@${entry.executor.id}> (${entry.executor.tag || entry.executor.username})`;
+          executor = `<@${entry.executor.id}> **(${entry.executor.tag || entry.executor.username})**`;
           break;
         }
       }
     } catch {}
 
     const author = message.author
-      ? `<@${message.author.id}> (${message.author.tag || message.author.username})`
+      ? `<@${message.author.id}> **(${message.author.tag || message.author.username})**`
       : 'Unknown (uncached)';
 
     let content;
     if (message.content === null || message.content === undefined) {
       content = '_[Message content uncached]_';
     } else if (message.content.trim() === '') {
-      content = '_[No text — media or attachment only]_';
+      content = '_[No text — media or embed only message]_';
     } else {
       content = message.content.substring(0, 900);
     }
@@ -194,7 +210,7 @@ const L = {
   async messageEdited(guild, oldMsg, newMsg) {
     if (oldMsg.author?.bot || oldMsg.content === newMsg.content) return;
     const ch = await getChannel(guild, 'message'); if (!ch) return;
-    const author = oldMsg.author ? `<@${oldMsg.author.id}> (${oldMsg.author.tag || oldMsg.author.username})` : 'Unknown';
+    const author = oldMsg.author ? `<@${oldMsg.author.id}> **(${oldMsg.author.tag || oldMsg.author.username})**` : 'Unknown';
     await send(ch, logContainer(null, '## Message Edited', [
       `**Author:** ${author}`,
       `**Channel:** <#${newMsg.channelId}>`,
@@ -212,7 +228,7 @@ const L = {
     const mTag = member?.user?.tag || member?.user?.username || member?.displayName || mId;
     const thumb = member?.user?.displayAvatarURL?.({ size: 256 }) || member?.displayAvatarURL?.({ size: 256 }) || null;
     await send(ch, logContainer(null, '## Joined Voice Channel', [
-      `**Member:** <@${mId}> (${mTag})`,
+      `**Member:** <@${mId}> **(${mTag})**`,
       `**Channel:** **${channel?.name || 'Voice Channel'}** \`${channel?.id || ''}\``,
       `**User ID:** \`${mId}\``,
       `**Time:** ${ts()}`,
@@ -225,7 +241,7 @@ const L = {
     const mTag = member?.user?.tag || member?.user?.username || member?.displayName || mId;
     const thumb = member?.user?.displayAvatarURL?.({ size: 256 }) || member?.displayAvatarURL?.({ size: 256 }) || null;
     await send(ch, logContainer(null, '## Left Voice Channel', [
-      `**Member:** <@${mId}> (${mTag})`,
+      `**Member:** <@${mId}> **(${mTag})**`,
       `**Channel:** **${channel?.name || 'Voice Channel'}** \`${channel?.id || ''}\``,
       `**User ID:** \`${mId}\``,
       `**Time:** ${ts()}`,
@@ -238,7 +254,7 @@ const L = {
     const mTag = member?.user?.tag || member?.user?.username || member?.displayName || mId;
     const thumb = member?.user?.displayAvatarURL?.({ size: 256 }) || member?.displayAvatarURL?.({ size: 256 }) || null;
     await send(ch, logContainer(null, '## Switched Voice Channel', [
-      `**Member:** <@${mId}> (${mTag})`,
+      `**Member:** <@${mId}> **(${mTag})**`,
       `**From:** **${oldCh?.name || 'Old Channel'}** \`${oldCh?.id || ''}\``,
       `**To:** **${newCh?.name || 'New Channel'}** \`${newCh?.id || ''}\``,
       `**User ID:** \`${mId}\``,
@@ -309,7 +325,7 @@ const L = {
   async avatarChanged(guild, user, oldURL, newURL) {
     const ch = await getChannel(guild, 'audit'); if (!ch) return;
     const fields = [
-      `**User:** <@${user.id}> (${user.tag}) changed their profile picture`,
+      `**User:** <@${user.id}> **(${user.tag})** changed their profile picture`,
       `**User ID:** \`${user.id}\``,
       `**Time:** ${ts()}`,
       `**Old Avatar:** ${oldURL ? `[Click to view](${oldURL})` : 'No previous avatar'}`,
@@ -347,13 +363,13 @@ const L = {
 
     const targetTag = target?.tag || target?.user?.tag || target?.username || 'Unknown';
     const targetId  = target?.id  || target?.user?.id || 'Unknown';
-    const execTag   = exec ? `<@${exec.id}> (${exec.tag || exec.username})` : 'AutoMod';
+    const execTag   = exec ? `<@${exec.id}> **(${exec.tag || exec.username})**` : 'AutoMod';
     const thumbURL  = target?.displayAvatarURL?.({ size: 256 })
                    || target?.user?.displayAvatarURL?.({ size: 256 })
                    || null;
 
     const fields = [
-      `**Target:** <@${targetId}> (${targetTag})`,
+      `**Target:** <@${targetId}> **(${targetTag})**`,
       `**Moderator:** ${execTag}`,
       `**Reason:** ${reason || 'No reason provided'}`,
       `**Time:** ${ts()}`,
@@ -380,7 +396,7 @@ const L = {
 
   async inviteCreated(guild, invite) {
     const ch = await getChannel(guild, 'audit'); if (!ch) return;
-    const inviter = invite.inviter ? `<@${invite.inviter.id}> (${invite.inviter.tag})` : 'Unknown';
+    const inviter = invite.inviter ? `<@${invite.inviter.id}> **(${invite.inviter.tag})**` : 'Unknown';
     const channel = invite.channel ? `<#${invite.channel.id}> (\`${invite.channel.name}\`)` : 'Unknown';
     const maxAge  = invite.maxAge === 0 ? 'Never' : `${Math.floor(invite.maxAge / 3600)}h ${Math.floor((invite.maxAge % 3600) / 60)}m`;
     const maxUses = invite.maxUses === 0 ? 'Unlimited' : `${invite.maxUses}`;

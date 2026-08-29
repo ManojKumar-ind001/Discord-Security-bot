@@ -21,7 +21,7 @@ module.exports = {
     if (!bans.size) return interaction.editReply({ content: 'No banned users found in this server.' });
 
     const list = [...bans.values()].slice(0, 20).map((b, i) =>
-      `**${i + 1}.** \`${b.user.tag}\` (\`${b.user.id}\`)\n-# Reason: ${b.reason || 'No reason specified'}`
+      `> **${i + 1}.** \`${b.user.tag}\` (\`${b.user.id}\`)\n> -# Reason: ${b.reason || 'No reason specified'}`
     );
 
     const container = new ContainerBuilder();
