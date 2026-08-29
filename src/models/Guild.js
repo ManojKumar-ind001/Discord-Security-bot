@@ -45,6 +45,14 @@ function defaultData(guildId){
     modRoles: [], adminRoles: [],
     mutedRole: null, welcomeChannel: null,
     warns: [],
+    music: {
+      defaultVolume: 80,
+      autoplay: false,
+      autoLeave: true,
+      autoLeaveTimeout: 60000,
+      twentyFourSeven: false,
+      defaultLoop: 'off',
+    },
   };
 }
 
@@ -56,6 +64,7 @@ function ensureStructure(data, guildId){
   if(!data.logChannels) data.logChannels = {};
   if(!data.security)    data.security    = {};
   if(!data.automod)     data.automod     = {};
+  if(!data.music)       data.music       = {};
 
   // logChannels — fill missing keys only
   for(const key in def.logChannels){
@@ -71,9 +80,11 @@ function ensureStructure(data, guildId){
   for(const key in def.automod){
     if(!(key in data.automod)) data.automod[key] = def.automod[key];
   }
-  // Remove old/removed automod keys
-  delete data.automod.antiRaid;
-  delete data.automod.lockOnRaid;
+
+  // music — fill missing keys only
+  for(const key in def.music){
+    if(!(key in data.music)) data.music[key] = def.music[key];
+  }
 
   // Arrays
   if(!Array.isArray(data.warns))      data.warns      = [];

@@ -6,6 +6,7 @@ module.exports = {
     WARNING:  0xFEE75C, SECURITY: 0xFF6B35, LOG: 0x2F3136,
     AUDIT:    0x7289DA, ROLE: 0x9B59B6,  VC: 0x1ABC9C,
     JOIN:     0x2ECC71, LEAVE: 0xE74C3C,  MOD: 0xE67E22,
+    MUSIC:    0x1DB954,
   },
   EMOJIS: {
     SUCCESS:'✅', ERROR:'❌', WARNING:'⚠️', INFO:'ℹ️',
@@ -18,5 +19,21 @@ module.exports = {
     ANTI_RAID:    { JOIN_THRESHOLD: 10, JOIN_INTERVAL: 10000 },
     ANTI_SPAM:    { MSG_THRESHOLD: 7,   MSG_INTERVAL: 5000   },
     ANTI_MENTION: { THRESHOLD: 5 },
+  },
+  LAVALINK: {
+    NODES: [
+      {
+        name: process.env.LAVALINK_NAME || 'Main-Node',
+        url: `${process.env.LAVALINK_HOST || 'lava-v4.ajieblogs.eu.org'}:${process.env.LAVALINK_PORT || '443'}`,
+        auth: process.env.LAVALINK_PASSWORD || 'https://dsc.gg/ajidevserver',
+        secure: (process.env.LAVALINK_SECURE || 'true').toLowerCase() === 'true',
+      },
+    ],
+    DEFAULT_VOLUME: 80,
+    AUTO_LEAVE_TIMEOUT: 60000, // 1 minute when alone
+  },
+  SPOTIFY: {
+    CLIENT_ID: process.env.SPOTIFY_CLIENT_ID || '',
+    CLIENT_SECRET: process.env.SPOTIFY_CLIENT_SECRET || '',
   },
 };

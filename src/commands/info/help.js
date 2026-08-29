@@ -16,6 +16,30 @@ module.exports = {
   cooldown: 5,
   async execute(interaction, client) {
     const commands = {
+      music: {
+        label: 'Music Commands',
+        cmds: [
+          { cmd: '/play', desc: 'Play a track/playlist with instant live autocomplete' },
+          { cmd: '/pause', desc: 'Pause the current track' },
+          { cmd: '/resume', desc: 'Resume the paused track' },
+          { cmd: '/skip', desc: 'Skip to the next track' },
+          { cmd: '/stop', desc: 'Stop playback, clear queue, and leave voice' },
+          { cmd: '/nowplaying', desc: 'Show currently playing track with interactive controls' },
+          { cmd: '/queue', desc: 'View upcoming tracks with interactive pagination' },
+          { cmd: '/volume', desc: 'Adjust or view playback volume (1-100%)' },
+          { cmd: '/seek', desc: 'Seek to a specific timestamp (e.g. 1:30, 90s)' },
+          { cmd: '/loop', desc: 'Set loop mode (off, track, queue)' },
+          { cmd: '/shuffle', desc: 'Shuffle upcoming queue tracks' },
+          { cmd: '/remove', desc: 'Remove a track by position number' },
+          { cmd: '/clear', desc: 'Clear all upcoming tracks from queue' },
+          { cmd: '/move', desc: 'Move a track to a different position' },
+          { cmd: '/join', desc: 'Summon the bot to your voice channel' },
+          { cmd: '/leave', desc: 'Disconnect the bot from voice' },
+          { cmd: '/autoplay', desc: 'Toggle automatic recommendation playback' },
+          { cmd: '/247', desc: 'Toggle 24/7 voice channel persistence' },
+          { cmd: '/filter', desc: 'Apply DSP audio filters (bassboost, nightcore, 8d, etc.)' },
+        ],
+      },
       moderation: {
         label: 'Moderation Commands',
         cmds: [
@@ -75,6 +99,7 @@ module.exports = {
           { cmd: '/uptime', desc: 'View bot uptime' },
           { cmd: '/suggest', desc: 'Submit a suggestion' },
           { cmd: '/poll', desc: 'Create an interactive poll' },
+          { cmd: '/react', desc: 'React to a message with emojis' },
           { cmd: '/say', desc: 'Send a message through the bot' },
           { cmd: '/embed', desc: 'Send a custom message panel' },
           { cmd: '/nick', desc: "Change or reset a member's nickname" },
@@ -93,10 +118,11 @@ module.exports = {
 
       const section = new SectionBuilder()
         .addTextDisplayComponents(
-          new TextDisplayBuilder().setContent('> **Advanced Discord Security & Moderation Bot**'),
+          new TextDisplayBuilder().setContent('> **Advanced Discord Security & Premium Music Bot**'),
           new TextDisplayBuilder().setContent('> Select a category from the dropdown below to view commands.'),
           new TextDisplayBuilder().setContent(
             `\n> **Total Commands:** \`${totalCmds}\`\n` +
+            `> **Music:** \`${commands.music.cmds.length}\` commands\n` +
             `> **Moderation:** \`${commands.moderation.cmds.length}\` commands\n` +
             `> **Security:** \`${commands.security.cmds.length}\` commands\n` +
             `> **Info:** \`${commands.info.cmds.length}\` commands\n` +
@@ -136,6 +162,11 @@ module.exports = {
               label: 'Home',
               description: 'Return to main help page',
               value: 'home',
+            },
+            {
+              label: commands.music.label,
+              description: `${commands.music.cmds.length} music commands`,
+              value: 'music',
             },
             {
               label: commands.moderation.label,

@@ -23,5 +23,10 @@ module.exports = {
     } else if (oldChannel && newChannel && oldChannel.id !== newChannel.id) {
       await Logger.vcMoved(guild, member, oldChannel, newChannel);
     }
+
+    // Music Auto-leave check
+    if (client.musicManager) {
+      client.musicManager.handleVoiceState(oldState, newState);
+    }
   },
 };

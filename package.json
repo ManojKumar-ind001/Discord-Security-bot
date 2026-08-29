@@ -9,11 +9,14 @@
     "deploy": "node src/deploy-commands.js"
   },
   "dependencies": {
+    "chalk": "^4.1.2",
     "discord.js": "^14.16.3",
     "dotenv": "^16.4.5",
+    "kazagumo": "^3.4.3",
+    "kazagumo-spotify": "^2.1.1",
     "mongoose": "^8.4.0",
-    "chalk": "^4.1.2",
-    "ms": "^2.1.3"
+    "ms": "^2.1.3",
+    "shoukaku": "^4.3.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.0"

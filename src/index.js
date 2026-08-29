@@ -18,9 +18,12 @@ const client = new Client({
   }),
 });
 
+const MusicManager = require('./music/MusicManager');
+
 client.slashCommands = new Collection();
 client.prefixCommands = new Collection();
 client.cooldowns = new Collection();
+client.musicManager = new MusicManager(client);
 
 new CommandHandler(client).load();
 new EventHandler(client).load();
