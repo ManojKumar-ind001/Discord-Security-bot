@@ -332,8 +332,8 @@ module.exports = {
       });
     }
 
-    // Shoukaku's underlying player
-    const shoukakuPlayer = player.player;
+    // Shoukaku's underlying player (accessed via player.shoukaku in kazagumo)
+    const shoukakuPlayer = player.shoukaku;
 
     try {
       // Always send the full filter object so ALL fields are replaced (no merging artifacts)
