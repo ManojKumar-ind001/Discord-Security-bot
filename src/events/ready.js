@@ -5,9 +5,10 @@ const BotConfig = require('../models/BotConfig');
 const msgCache = require('../utils/messageCache');
 
 module.exports = {
-  name: Events.ClientReady, once: true,
-  async execute(client){
-    console.log(chalk.green('[BOT] Logged in as '+client.user.tag));
+  name: Events.ClientReady,
+  once: true,
+  async execute(client) {
+    console.log(chalk.green('[BOT] Logged in as ' + client.user.tag));
 
     // Set presence/activity
     const cfg = BotConfig.get();
@@ -22,34 +23,36 @@ module.exports = {
       name: cfg.activity.message,
       type: typeMap[cfg.activity.type] || ActivityType.Watching,
     };
-    if(cfg.activity.type === 'streaming') activityOptions.url = 'https://www.twitch.tv/gamerz_workshop';
+    if (cfg.activity.type === 'streaming') activityOptions.url = 'https://www.twitch.tv/gamerz_workshop';
     client.user.setPresence({ activities: [activityOptions], status: cfg.activity.status });
     console.log(chalk.blue(`[BOT] Activity: ${cfg.activity.type} "${cfg.activity.message}" (${cfg.activity.status})`));
 
     // ─── Startup Message Cache ─────────────────────────────────────────────
-    // Fetch last 100 messages from every text + voice-text channel so
-    // deletes that happen shortly after startup still show full content.
+    // Fetch last 100 messages from every viewable text channel (including admin channels)
     const warmupCache = async () => {
       console.log(chalk.blue('[CACHE] Warming up message cache...'));
       let total = 0;
-      for(const guild of client.guilds.cache.values()){
-        const textChannels = guild.channels.cache.filter(c =>
-          c.isTextBased() && 
-          c.type !== ChannelType.GuildCategory &&
-          c.viewable
-        );
-        for(const [, channel] of textChannels){
-          try{
-            const msgs = await channel.messages.fetch({ limit: 100 });
-            for(const [, msg] of msgs){
-              if(!msg.author?.bot) {
-                msgCache.set(msg);
-                total++;
+      for (const guild of client.guilds.cache.values()) {
+        try {
+          const channels = await guild.channels.fetch().catch(() => guild.channels.cache);
+          const textChannels = channels.filter(c =>
+            c && c.isTextBased() &&
+            c.type !== ChannelType.GuildCategory &&
+            c.viewable
+          );
+          for (const [, channel] of textChannels) {
+            try {
+              const msgs = await channel.messages.fetch({ limit: 100 });
+              for (const [, msg] of msgs.values()) {
+                if (!msg.author?.bot) {
+                  msgCache.set(msg);
+                  total++;
+                }
               }
-            }
-          }catch{
-            // No permission to read this channel — skip silently
+            } catch {}
           }
+        } catch (e) {
+          console.error(`[CACHE] Warmup error for ${guild.name}:`, e.message);
         }
       }
       console.log(chalk.green(`[CACHE] Warmed up with ${total} messages.`));
@@ -59,11 +62,11 @@ module.exports = {
     // ─── Hourly Role Sync ──────────────────────────────────────────────────
     const syncRoles = async () => {
       console.log(chalk.blue('[SYNC] Starting hourly Admin/Mod role scan...'));
-      for(const guild of client.guilds.cache.values()){
+      for (const guild of client.guilds.cache.values()) {
         try {
           const data = await GuildModel.get(guild.id);
           const roles = await guild.roles.fetch();
-          
+
           let changed = false;
           const currentAdmin = data.adminRoles || [];
           const currentMod = data.modRoles || [];
@@ -79,14 +82,16 @@ module.exports = {
              r.permissions.has(PermissionFlagsBits.ManageMessages))
           ).keys());
 
-          if(JSON.stringify([...currentAdmin].sort()) !== JSON.stringify([...adminRoles].sort())){
-            data.adminRoles = adminRoles; changed = true;
+          if (JSON.stringify([...currentAdmin].sort()) !== JSON.stringify([...adminRoles].sort())) {
+            data.adminRoles = adminRoles;
+            changed = true;
           }
-          if(JSON.stringify([...currentMod].sort()) !== JSON.stringify([...modRoles].sort())){
-            data.modRoles = modRoles; changed = true;
+          if (JSON.stringify([...currentMod].sort()) !== JSON.stringify([...modRoles].sort())) {
+            data.modRoles = modRoles;
+            changed = true;
           }
-          if(changed) await GuildModel.save(guild.id, data);
-        } catch(e) {
+          if (changed) await GuildModel.save(guild.id, data);
+        } catch (e) {
           console.error(`[SYNC] Failed for guild ${guild.id}:`, e.message);
         }
       }
