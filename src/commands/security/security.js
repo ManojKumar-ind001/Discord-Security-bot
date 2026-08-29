@@ -1,8 +1,15 @@
-const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
-const Embed = require('../../utils/Embed');
+const {
+  SlashCommandBuilder,
+  PermissionFlagsBits,
+  ContainerBuilder,
+  TextDisplayBuilder,
+  SeparatorBuilder,
+  SeparatorSpacingSize,
+  MessageFlags,
+} = require('discord.js');
+const V2 = require('../../utils/Embed');
 const Perm = require('../../utils/Permissions');
 const GuildModel = require('../../models/Guild');
-const { COLORS } = require('../../config/config');
 
 module.exports = {
   data: new SlashCommandBuilder().setName('security').setDescription('Manage security settings')
@@ -16,71 +23,100 @@ module.exports = {
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
   cooldown: 3,
 
-  async execute(interaction, client){
+  async execute(interaction, client) {
     await interaction.deferReply();
-    if(!(await Perm.check(interaction, 'admin'))) return;
+    if (!(await Perm.check(interaction, 'admin'))) return;
 
-    const sub = interaction.options.getSubcommand();
+    const sub  = interaction.options.getSubcommand();
     const data = await GuildModel.get(interaction.guild.id);
 
-    if(sub === 'status'){
-      const am = data.automod || {};
-      const on  = '🟢 Enabled';
-      const off = '🔴 Disabled';
+    if (sub === 'status') {
+      const am  = data.automod || {};
+      const on  = '**Enabled**';
+      const off = '**Disabled**';
 
-      const e = new EmbedBuilder()
-        .setColor(COLORS.SECURITY)
-        .setTitle('🛡️ Security & AutoMod Status')
-        .setDescription('Full overview of all protection modules and settings.')
-        .addFields(
-          // AutoMod section
-          { name: '━━━━━━ AutoMod Modules ━━━━━━', value: '\u200b', inline: false },
-          { name: '💬 Anti-Spam',    value: am.antiSpam?.enabled    ? `${on}\n${am.antiSpam.threshold} msgs / ${am.antiSpam.interval}s → ${am.antiSpam.action}`    : off, inline: true },
-          { name: '🔗 Anti-Links',   value: am.antiLinks?.enabled   ? `${on}\nBlocked: ${am.antiLinks.allowedDomains?.length || 0} domains → ${am.antiLinks.action}` : off, inline: true },
-          { name: '📢 Anti-Mention', value: am.antiMention?.enabled ? `${on}\n${am.antiMention.threshold} mentions → ${am.antiMention.action}`                        : off, inline: true },
-          // Server settings section
-          { name: '━━━━━━ Server Settings ━━━━━━', value: '\u200b', inline: false },
-          { name: '🪤 Honeypot Channel', value: data.security?.trappedChannel ? `<#${data.security.trappedChannel}>` : 'Not set', inline: true },
-          { name: '🎭 Auto Join Role',   value: data.security?.verificationRole ? `<@&${data.security.verificationRole}>` : 'Not set', inline: true },
-          { name: '📩 Join DM Message',  value: data.joinMessage ? '✅ Set' : 'Not set', inline: true },
-          // Log channels section
-          { name: '━━━━━━ Log Channels ━━━━━━', value: '\u200b', inline: false },
-          { name: '📊 Audit Log',    value: data.logChannels?.audit   ? `<#${data.logChannels.audit}>`   : '❌ Not set', inline: true },
-          { name: '📥 Join/Leave',   value: data.logChannels?.join    ? `<#${data.logChannels.join}>`    : '❌ Not set', inline: true },
-          { name: '🔊 Voice Log',    value: data.logChannels?.vc      ? `<#${data.logChannels.vc}>`      : '❌ Not set', inline: true },
-          { name: '💬 Message Log',  value: data.logChannels?.message ? `<#${data.logChannels.message}>` : '❌ Not set', inline: true },
-          // Bot health
-          { name: '━━━━━━ Bot Health ━━━━━━', value: '\u200b', inline: false },
-          { name: '🌐 Ping', value: `${client.ws.ping}ms`, inline: true },
-          { name: '⏱️ Uptime', value: `${Math.floor(client.uptime / 3600000)}h ${Math.floor((client.uptime % 3600000) / 60000)}m`, inline: true },
+      const container = new ContainerBuilder();
+
+      container.addTextDisplayComponents(new TextDisplayBuilder().setContent('## Security & AutoMod Status'));
+      container.addTextDisplayComponents(new TextDisplayBuilder().setContent('> Full overview of all protection modules and settings.'));
+      container.addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small));
+
+      // AutoMod section
+      container.addTextDisplayComponents(new TextDisplayBuilder().setContent('### AutoMod Modules'));
+      container.addTextDisplayComponents(
+        new TextDisplayBuilder().setContent(
+          `> **Anti-Spam:** ${am.antiSpam?.enabled ? `${on} — ${am.antiSpam.threshold} msgs / ${am.antiSpam.interval}s → \`${am.antiSpam.action}\`` : off}\n` +
+          `> **Anti-Links:** ${am.antiLinks?.enabled ? `${on} — Blocked: ${am.antiLinks.allowedDomains?.length || 0} domains → \`${am.antiLinks.action}\`` : off}\n` +
+          `> **Anti-Mention:** ${am.antiMention?.enabled ? `${on} — ${am.antiMention.threshold} mentions → \`${am.antiMention.action}\`` : off}`
         )
-        .setFooter({ text: '🎮 GAMERZ WORKSHOP | Use /automod to configure modules' })
-        .setTimestamp();
+      );
 
-      return interaction.editReply({ embeds: [e] });
+      container.addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small));
+
+      // Server settings
+      container.addTextDisplayComponents(new TextDisplayBuilder().setContent('### Server Settings'));
+      container.addTextDisplayComponents(
+        new TextDisplayBuilder().setContent(
+          `> **Honeypot Channel:** ${data.security?.trappedChannel ? `<#${data.security.trappedChannel}>` : 'Not set'}\n` +
+          `> **Auto Join Role:** ${data.security?.verificationRole ? `<@&${data.security.verificationRole}>` : 'Not set'}\n` +
+          `> **Join DM Message:** ${data.joinMessage ? 'Set' : 'Not set'}`
+        )
+      );
+
+      container.addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small));
+
+      // Log channels
+      container.addTextDisplayComponents(new TextDisplayBuilder().setContent('### Log Channels'));
+      container.addTextDisplayComponents(
+        new TextDisplayBuilder().setContent(
+          `> **Audit Log:** ${data.logChannels?.audit ? `<#${data.logChannels.audit}>` : 'Not set'}\n` +
+          `> **Join/Leave:** ${data.logChannels?.join ? `<#${data.logChannels.join}>` : 'Not set'}\n` +
+          `> **Voice Log:** ${data.logChannels?.vc ? `<#${data.logChannels.vc}>` : 'Not set'}\n` +
+          `> **Message Log:** ${data.logChannels?.message ? `<#${data.logChannels.message}>` : 'Not set'}`
+        )
+      );
+
+      container.addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small));
+
+      // Bot health
+      container.addTextDisplayComponents(new TextDisplayBuilder().setContent('### Bot Health'));
+      container.addTextDisplayComponents(
+        new TextDisplayBuilder().setContent(
+          `> **Ping:** ${client.ws.ping}ms\n` +
+          `> **Uptime:** ${Math.floor(client.uptime / 3600000)}h ${Math.floor((client.uptime % 3600000) / 60000)}m`
+        )
+      );
+
+      container.addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small));
+      container.addTextDisplayComponents(new TextDisplayBuilder().setContent('-# GAMERZ WORKSHOP | Use /automod to configure modules'));
+
+      return interaction.editReply({ flags: MessageFlags.IsComponentsV2, components: [container] });
     }
 
-    if(sub === 'trappedchannel'){
+    if (sub === 'trappedchannel') {
       const channel = interaction.options.getChannel('channel');
-      if(!data.security) data.security = {};
+      if (!data.security) data.security = {};
       data.security.trappedChannel = channel ? channel.id : null;
       await GuildModel.save(interaction.guild.id, data);
-      return interaction.editReply({ embeds: [Embed.success('Honeypot Channel', channel ? `Honeypot set to ${channel}.\nAnyone who types there gets banned.` : 'Honeypot channel disabled.', client)] });
+      return interaction.editReply(V2.reply(V2.success('Honeypot Channel',
+        channel ? `Honeypot set to ${channel}.\nAnyone who types there gets banned.` : 'Honeypot channel disabled.', client)));
     }
 
-    if(sub === 'joinrole'){
+    if (sub === 'joinrole') {
       const role = interaction.options.getRole('role');
-      if(!data.security) data.security = {};
+      if (!data.security) data.security = {};
       data.security.verificationRole = role ? role.id : null;
       await GuildModel.save(interaction.guild.id, data);
-      return interaction.editReply({ embeds: [Embed.success('Join Role', role ? `Auto join role set to ${role}.` : 'Auto join role disabled.', client)] });
+      return interaction.editReply(V2.reply(V2.success('Join Role',
+        role ? `Auto join role set to ${role}.` : 'Auto join role disabled.', client)));
     }
 
-    if(sub === 'joinmsg'){
+    if (sub === 'joinmsg') {
       const msg = interaction.options.getString('message');
       data.joinMessage = msg || null;
       await GuildModel.save(interaction.guild.id, data);
-      return interaction.editReply({ embeds: [Embed.success('Join Message', msg ? 'Join DM message updated.' : 'Join DM message disabled.', client)] });
+      return interaction.editReply(V2.reply(V2.success('Join Message',
+        msg ? 'Join DM message updated.' : 'Join DM message disabled.', client)));
     }
   },
 };

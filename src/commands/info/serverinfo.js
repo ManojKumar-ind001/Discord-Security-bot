@@ -1,28 +1,51 @@
+const {
+  SlashCommandBuilder,
+  ContainerBuilder,
+  TextDisplayBuilder,
+  SeparatorBuilder,
+  SeparatorSpacingSize,
+  SectionBuilder,
+  ThumbnailBuilder,
+  MessageFlags,
+} = require('discord.js');
 
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const { COLORS } = require('../../config/config');
 module.exports = {
   data: new SlashCommandBuilder().setName('serverinfo').setDescription('View server information'),
   cooldown: 5,
-  async execute(interaction, client){
-    const g=interaction.guild;
+  async execute(interaction, client) {
+    const g = interaction.guild;
     await g.fetch();
-    const e=new EmbedBuilder().setColor(COLORS.PRIMARY)
-      .setTitle('🏰 Server Info — '+g.name)
-      .setThumbnail(g.iconURL({dynamic:true,size:256}))
-      .addFields(
-        {name:'🆔 Server ID',value:g.id,inline:true},
-        {name:'👑 Owner',value:'<@'+g.ownerId+'>',inline:true},
-        {name:'📅 Created',value:'<t:'+Math.floor(g.createdTimestamp/1000)+':F>',inline:false},
-        {name:'👥 Members',value:''+g.memberCount,inline:true},
-        {name:'💬 Channels',value:''+g.channels.cache.size,inline:true},
-        {name:'🏷️ Roles',value:''+g.roles.cache.size,inline:true},
-        {name:'😀 Emojis',value:''+g.emojis.cache.size,inline:true},
-        {name:'🔒 Verification',value:''+g.verificationLevel,inline:true},
-        {name:'🚀 Boost Level',value:''+g.premiumTier,inline:true},
-        {name:'🚀 Boosts',value:''+g.premiumSubscriptionCount,inline:true},
-      ).setFooter({text:'🎮 GAMERZ WORKSHOP'}).setTimestamp();
-    if(g.bannerURL()) e.setImage(g.bannerURL({size:1024}));
-    await interaction.reply({embeds:[e]});
+
+    const container = new ContainerBuilder();
+    container.addTextDisplayComponents(new TextDisplayBuilder().setContent(`## Server Information — ${g.name}`));
+    container.addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small));
+
+    const iconUrl = g.iconURL({ size: 256 }) || client.user.displayAvatarURL({ size: 256 });
+    const section = new SectionBuilder()
+      .addTextDisplayComponents(
+        new TextDisplayBuilder().setContent(`> **Server ID:** \`${g.id}\``),
+        new TextDisplayBuilder().setContent(`> **Owner:** <@${g.ownerId}>`),
+        new TextDisplayBuilder().setContent(`> **Members:** \`${g.memberCount}\``),
+        new TextDisplayBuilder().setContent(`> **Channels:** \`${g.channels.cache.size}\``),
+      )
+      .setThumbnailAccessory(new ThumbnailBuilder({ media: { url: iconUrl } }));
+    container.addSectionComponents(section);
+
+    container.addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small));
+
+    container.addTextDisplayComponents(
+      new TextDisplayBuilder().setContent(
+        `> **Created:** <t:${Math.floor(g.createdTimestamp / 1000)}:F>\n` +
+        `> **Roles:** \`${g.roles.cache.size}\`\n` +
+        `> **Emojis:** \`${g.emojis.cache.size}\`\n` +
+        `> **Verification:** \`${g.verificationLevel}\`\n` +
+        `> **Boost Tier:** \`Tier ${g.premiumTier}\` (${g.premiumSubscriptionCount || 0} boosts)`
+      )
+    );
+
+    container.addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small));
+    container.addTextDisplayComponents(new TextDisplayBuilder().setContent('-# GAMERZ WORKSHOP'));
+
+    await interaction.reply({ flags: MessageFlags.IsComponentsV2, components: [container] });
   },
 };

@@ -1,25 +1,51 @@
+const {
+  SlashCommandBuilder,
+  ContainerBuilder,
+  TextDisplayBuilder,
+  SeparatorBuilder,
+  SeparatorSpacingSize,
+  SectionBuilder,
+  ThumbnailBuilder,
+  MessageFlags,
+} = require('discord.js');
 
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const { COLORS } = require('../../config/config');
 module.exports = {
   data: new SlashCommandBuilder().setName('userinfo').setDescription('View info about a user')
-    .addUserOption(o=>o.setName('user').setDescription('User (default: yourself)')),
+    .addUserOption(o => o.setName('user').setDescription('User (default: yourself)')),
   cooldown: 5,
-  async execute(interaction, client){
-    const user=interaction.options.getUser('user')||interaction.user;
-    const member=interaction.guild.members.cache.get(user.id);
-    const roles=member?.roles.cache.filter(r=>r.id!==interaction.guild.id).map(r=>r.toString()).join(', ')||'None';
-    const e=new EmbedBuilder().setColor(member?.displayHexColor||COLORS.PRIMARY)
-      .setTitle('👤 User Info — '+user.tag)
-      .setThumbnail(user.displayAvatarURL({dynamic:true,size:256}))
-      .addFields(
-        {name:'🆔 User ID',value:user.id,inline:true},
-        {name:'🤖 Bot',value:user.bot?'Yes':'No',inline:true},
-        {name:'📅 Account Created',value:'<t:'+Math.floor(user.createdTimestamp/1000)+':F>',inline:false},
-        {name:'📥 Joined Server',value:member?'<t:'+Math.floor(member.joinedTimestamp/1000)+':F>':'Not in server',inline:false},
-        {name:'🎨 Display Color',value:member?.displayHexColor||'N/A',inline:true},
-        {name:'🏷️ Roles ['+((member?.roles.cache.size||1)-1)+']',value:roles.length>1000?roles.substring(0,997)+'...':roles||'None',inline:false},
-      ).setFooter({text:'🎮 GAMERZ WORKSHOP'}).setTimestamp();
-    await interaction.reply({embeds:[e]});
+  async execute(interaction, client) {
+    const user = interaction.options.getUser('user') || interaction.user;
+    const member = interaction.guild.members.cache.get(user.id);
+    const roles = member?.roles.cache.filter(r => r.id !== interaction.guild.id).map(r => r.toString()).join(', ') || 'None';
+
+    const container = new ContainerBuilder();
+
+    container.addTextDisplayComponents(new TextDisplayBuilder().setContent(`## User Information — ${user.tag}`));
+    container.addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small));
+
+    const section = new SectionBuilder()
+      .addTextDisplayComponents(
+        new TextDisplayBuilder().setContent(`> **User ID:** \`${user.id}\``),
+        new TextDisplayBuilder().setContent(`> **Bot:** \`${user.bot ? 'Yes' : 'No'}\``),
+        new TextDisplayBuilder().setContent(`> **Color:** \`${member?.displayHexColor || 'N/A'}\``),
+        new TextDisplayBuilder().setContent(`> **Highest Role:** ${member?.roles?.highest || 'None'}`),
+      )
+      .setThumbnailAccessory(new ThumbnailBuilder({ media: { url: user.displayAvatarURL({ size: 256 }) } }));
+    container.addSectionComponents(section);
+
+    container.addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small));
+
+    container.addTextDisplayComponents(
+      new TextDisplayBuilder().setContent(
+        `> **Account Created:** <t:${Math.floor(user.createdTimestamp / 1000)}:F>\n` +
+        `> **Joined Server:** ${member ? `<t:${Math.floor(member.joinedTimestamp / 1000)}:F>` : 'Not in server'}\n\n` +
+        `> **Roles [${(member?.roles.cache.size || 1) - 1}]:**\n${roles.length > 800 ? roles.substring(0, 797) + '...' : roles || 'None'}`
+      )
+    );
+
+    container.addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small));
+    container.addTextDisplayComponents(new TextDisplayBuilder().setContent('-# GAMERZ WORKSHOP'));
+
+    await interaction.reply({ flags: MessageFlags.IsComponentsV2, components: [container] });
   },
 };
