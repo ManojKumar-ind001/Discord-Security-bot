@@ -38,16 +38,16 @@ module.exports = {
       const container = new ContainerBuilder();
 
       container.addTextDisplayComponents(new TextDisplayBuilder().setContent('## Security & AutoMod Status'));
-      container.addTextDisplayComponents(new TextDisplayBuilder().setContent('> Full overview of all protection modules and settings.'));
+      container.addTextDisplayComponents(new TextDisplayBuilder().setContent('Full overview of all protection modules and settings.'));
       container.addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small));
 
       // AutoMod section
       container.addTextDisplayComponents(new TextDisplayBuilder().setContent('### AutoMod Modules'));
       container.addTextDisplayComponents(
         new TextDisplayBuilder().setContent(
-          `> **Anti-Spam:** ${am.antiSpam?.enabled ? `${on} — ${am.antiSpam.threshold} msgs / ${am.antiSpam.interval}s → \`${am.antiSpam.action}\`` : off}\n` +
-          `> **Anti-Links:** ${am.antiLinks?.enabled ? `${on} — Blocked: ${am.antiLinks.allowedDomains?.length || 0} domains → \`${am.antiLinks.action}\`` : off}\n` +
-          `> **Anti-Mention:** ${am.antiMention?.enabled ? `${on} — ${am.antiMention.threshold} mentions → \`${am.antiMention.action}\`` : off}`
+          `**Anti-Spam:** ${am.antiSpam?.enabled ? `${on} — ${am.antiSpam.threshold} msgs / ${am.antiSpam.interval}s → \`${am.antiSpam.action}\`` : off}\n` +
+          `**Anti-Links:** ${am.antiLinks?.enabled ? `${on} — Blocked: ${am.antiLinks.allowedDomains?.length || 0} domains → \`${am.antiLinks.action}\`` : off}\n` +
+          `**Anti-Mention:** ${am.antiMention?.enabled ? `${on} — ${am.antiMention.threshold} mentions → \`${am.antiMention.action}\`` : off}`
         )
       );
 
@@ -57,9 +57,9 @@ module.exports = {
       container.addTextDisplayComponents(new TextDisplayBuilder().setContent('### Server Settings'));
       container.addTextDisplayComponents(
         new TextDisplayBuilder().setContent(
-          `> **Honeypot Channel:** ${data.security?.trappedChannel ? `<#${data.security.trappedChannel}>` : 'Not set'}\n` +
-          `> **Auto Join Role:** ${data.security?.verificationRole ? `<@&${data.security.verificationRole}>` : 'Not set'}\n` +
-          `> **Join DM Message:** ${data.joinMessage ? 'Set' : 'Not set'}`
+          `**Honeypot Channel:** ${data.security?.trappedChannel ? `<#${data.security.trappedChannel}>` : 'Not set'}\n` +
+          `**Auto Join Role:** ${data.security?.verificationRole ? `<@&${data.security.verificationRole}>` : 'Not set'}\n` +
+          `**Join DM Message:** ${data.joinMessage ? 'Set' : 'Not set'}`
         )
       );
 
@@ -69,10 +69,10 @@ module.exports = {
       container.addTextDisplayComponents(new TextDisplayBuilder().setContent('### Log Channels'));
       container.addTextDisplayComponents(
         new TextDisplayBuilder().setContent(
-          `> **Audit Log:** ${data.logChannels?.audit ? `<#${data.logChannels.audit}>` : 'Not set'}\n` +
-          `> **Join/Leave:** ${data.logChannels?.join ? `<#${data.logChannels.join}>` : 'Not set'}\n` +
-          `> **Voice Log:** ${data.logChannels?.vc ? `<#${data.logChannels.vc}>` : 'Not set'}\n` +
-          `> **Message Log:** ${data.logChannels?.message ? `<#${data.logChannels.message}>` : 'Not set'}`
+          `**Audit Log:** ${data.logChannels?.audit ? `<#${data.logChannels.audit}>` : 'Not set'}\n` +
+          `**Join/Leave:** ${data.logChannels?.join ? `<#${data.logChannels.join}>` : 'Not set'}\n` +
+          `**Voice Log:** ${data.logChannels?.vc ? `<#${data.logChannels.vc}>` : 'Not set'}\n` +
+          `**Message Log:** ${data.logChannels?.message ? `<#${data.logChannels.message}>` : 'Not set'}`
         )
       );
 
@@ -82,8 +82,8 @@ module.exports = {
       container.addTextDisplayComponents(new TextDisplayBuilder().setContent('### Bot Health'));
       container.addTextDisplayComponents(
         new TextDisplayBuilder().setContent(
-          `> **Ping:** ${client.ws.ping}ms\n` +
-          `> **Uptime:** ${Math.floor(client.uptime / 3600000)}h ${Math.floor((client.uptime % 3600000) / 60000)}m`
+          `**Ping:** \`${client.ws.ping}ms\`\n` +
+          `**Uptime:** \`${Math.floor(client.uptime / 3600000)}h ${Math.floor((client.uptime % 3600000) / 60000)}m\``
         )
       );
 

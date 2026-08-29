@@ -25,10 +25,10 @@ module.exports = {
 
     const section = new SectionBuilder()
       .addTextDisplayComponents(
-        new TextDisplayBuilder().setContent(`> **User ID:** \`${user.id}\``),
-        new TextDisplayBuilder().setContent(`> **Bot:** \`${user.bot ? 'Yes' : 'No'}\``),
-        new TextDisplayBuilder().setContent(`> **Color:** \`${member?.displayHexColor || 'N/A'}\``),
-        new TextDisplayBuilder().setContent(`> **Highest Role:** ${member?.roles?.highest || 'None'}`),
+        new TextDisplayBuilder().setContent(`**User ID:** \`${user.id}\``),
+        new TextDisplayBuilder().setContent(`**Bot:** \`${user.bot ? 'Yes' : 'No'}\``),
+        new TextDisplayBuilder().setContent(`**Color:** \`${member?.displayHexColor || 'N/A'}\``),
+        new TextDisplayBuilder().setContent(`**Highest Role:** ${member?.roles?.highest || 'None'}`),
       )
       .setThumbnailAccessory(new ThumbnailBuilder({ media: { url: user.displayAvatarURL({ size: 256 }) } }));
     container.addSectionComponents(section);
@@ -37,9 +37,9 @@ module.exports = {
 
     container.addTextDisplayComponents(
       new TextDisplayBuilder().setContent(
-        `> **Account Created:** <t:${Math.floor(user.createdTimestamp / 1000)}:F>\n` +
-        `> **Joined Server:** ${member ? `<t:${Math.floor(member.joinedTimestamp / 1000)}:F>` : 'Not in server'}\n\n` +
-        `> **Roles [${(member?.roles.cache.size || 1) - 1}]:**\n${roles.length > 800 ? roles.substring(0, 797) + '...' : roles || 'None'}`
+        `**Account Created:** <t:${Math.floor(user.createdTimestamp / 1000)}:F>\n` +
+        `**Joined Server:** ${member ? `<t:${Math.floor(member.joinedTimestamp / 1000)}:F>` : 'Not in server'}\n\n` +
+        `**Roles [${(member?.roles.cache.size || 1) - 1}]:**\n${roles.length > 800 ? roles.substring(0, 797) + '...' : roles || 'None'}`
       )
     );
 

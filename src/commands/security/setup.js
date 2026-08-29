@@ -45,27 +45,27 @@ module.exports = {
 
       const container = new ContainerBuilder();
       container.addTextDisplayComponents(new TextDisplayBuilder().setContent('## Log Channel Configuration'));
-      container.addTextDisplayComponents(new TextDisplayBuilder().setContent('> Current log channel settings for this server.\n> Use `/setup logs` to configure channels.'));
+      container.addTextDisplayComponents(new TextDisplayBuilder().setContent('Current log channel settings for this server.\nUse `/setup logs` to configure channels.'));
       container.addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small));
 
       container.addTextDisplayComponents(new TextDisplayBuilder().setContent(
-        `> **Audit Log:** ${fmt('audit')}\n` +
-        `> -# *Logs: Mod actions, Role changes, Avatar changes, Channel/Role events, Invite tracking, Security alerts*`
+        `**Audit Log:** ${fmt('audit')}\n` +
+        `-# *Logs: Mod actions, Role changes, Avatar changes, Channel/Role events, Invite tracking, Security alerts*`
       ));
       container.addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small));
       container.addTextDisplayComponents(new TextDisplayBuilder().setContent(
-        `> **Join/Leave Log:** ${fmt('join')}\n` +
-        `> -# *Logs: Member joins (with account age warning), Member leaves (with roles)*`
+        `**Join/Leave Log:** ${fmt('join')}\n` +
+        `-# *Logs: Member joins (with account age warning), Member leaves (with roles)*`
       ));
       container.addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small));
       container.addTextDisplayComponents(new TextDisplayBuilder().setContent(
-        `> **Voice Log:** ${fmt('vc')}\n` +
-        `> -# *Logs: VC join, VC leave, VC switch*`
+        `**Voice Log:** ${fmt('vc')}\n` +
+        `-# *Logs: VC join, VC leave, VC switch*`
       ));
       container.addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small));
       container.addTextDisplayComponents(new TextDisplayBuilder().setContent(
-        `> **Message Log:** ${fmt('message')}\n` +
-        `> -# *Logs: Message delete (with content), Message edit (before/after)*`
+        `**Message Log:** ${fmt('message')}\n` +
+        `-# *Logs: Message delete (with content), Message edit (before/after)*`
       ));
       container.addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small));
       container.addTextDisplayComponents(new TextDisplayBuilder().setContent('-# GAMERZ WORKSHOP'));

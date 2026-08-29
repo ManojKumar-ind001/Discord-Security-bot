@@ -21,9 +21,9 @@ module.exports = {
 
     container.addTextDisplayComponents(
       new TextDisplayBuilder().setContent(
-        `> **Bot Latency:** \`${rtt}ms\`\n` +
-        `> **WebSocket:** \`${wsp}ms\`\n` +
-        `> **Status:** **${rtt < 200 ? 'Excellent' : 'Good'}**`
+        `**Bot Latency:** \`${rtt}ms\`\n` +
+        `**WebSocket:** \`${wsp}ms\`\n` +
+        `**Status:** **${rtt < 200 ? 'Excellent' : 'Good'}**`
       )
     );
 

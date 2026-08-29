@@ -45,14 +45,14 @@ module.exports = {
 
       const container = new ContainerBuilder();
       container.addTextDisplayComponents(new TextDisplayBuilder().setContent('## AutoMod Dashboard'));
-      container.addTextDisplayComponents(new TextDisplayBuilder().setContent('> Select a protection module from the dropdown below to configure.'));
+      container.addTextDisplayComponents(new TextDisplayBuilder().setContent('Select a protection module from the dropdown below to configure.'));
       container.addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small));
 
       container.addTextDisplayComponents(
         new TextDisplayBuilder().setContent(
-          `> **Anti-Spam:** ${status(am.antiSpam?.enabled)}\n` +
-          `> **Anti-Links:** ${status(am.antiLinks?.enabled)}\n` +
-          `> **Anti-Mention:** ${status(am.antiMention?.enabled)}`
+          `**Anti-Spam:** ${status(am.antiSpam?.enabled)}\n` +
+          `**Anti-Links:** ${status(am.antiLinks?.enabled)}\n` +
+          `**Anti-Mention:** ${status(am.antiMention?.enabled)}`
         )
       );
 
@@ -67,14 +67,14 @@ module.exports = {
       if (module === 'antispam') {
         const container = new ContainerBuilder();
         container.addTextDisplayComponents(new TextDisplayBuilder().setContent('## Anti-Spam'));
-        container.addTextDisplayComponents(new TextDisplayBuilder().setContent('> Detects rapid message flooding and triggers protective moderation actions.'));
+        container.addTextDisplayComponents(new TextDisplayBuilder().setContent('Detects rapid message flooding and triggers protective moderation actions.'));
         container.addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small));
 
         container.addTextDisplayComponents(
           new TextDisplayBuilder().setContent(
-            `> **Status:** ${am.antiSpam.enabled ? '**Active**' : '**Inactive**'}\n` +
-            `> **Threshold:** \`${am.antiSpam.threshold} messages\` in \`${am.antiSpam.interval}s\`\n` +
-            `> **Action:** ${am.antiSpam.action === 'timeout' ? '**Timeout (1 min)**' : '**Delete messages**'}`
+            `**Status:** ${am.antiSpam.enabled ? '**Active**' : '**Inactive**'}\n` +
+            `**Threshold:** \`${am.antiSpam.threshold} messages\` in \`${am.antiSpam.interval}s\`\n` +
+            `**Action:** ${am.antiSpam.action === 'timeout' ? '**Timeout (1 min)**' : '**Delete messages**'}`
           )
         );
 
@@ -90,15 +90,15 @@ module.exports = {
 
         const container = new ContainerBuilder();
         container.addTextDisplayComponents(new TextDisplayBuilder().setContent('## Anti-Links'));
-        container.addTextDisplayComponents(new TextDisplayBuilder().setContent('> Blocks links to specific domains. All other domains remain allowed.'));
+        container.addTextDisplayComponents(new TextDisplayBuilder().setContent('Blocks links to specific domains. All other domains remain allowed.'));
         container.addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small));
 
         container.addTextDisplayComponents(
           new TextDisplayBuilder().setContent(
-            `> **Status:** ${am.antiLinks.enabled ? '**Active**' : '**Inactive**'}\n` +
-            `> **Threshold:** \`${am.antiLinks.threshold} blocked links\`\n` +
-            `> **Action:** ${am.antiLinks.action === 'timeout' ? '**Timeout (2 min)**' : '**Delete message**'}\n` +
-            `> **Blocked Domains:** ${allowed}`
+            `**Status:** ${am.antiLinks.enabled ? '**Active**' : '**Inactive**'}\n` +
+            `**Threshold:** \`${am.antiLinks.threshold} blocked links\`\n` +
+            `**Action:** ${am.antiLinks.action === 'timeout' ? '**Timeout (2 min)**' : '**Delete message**'}\n` +
+            `**Blocked Domains:** ${allowed}`
           )
         );
 
@@ -114,15 +114,15 @@ module.exports = {
 
         const container = new ContainerBuilder();
         container.addTextDisplayComponents(new TextDisplayBuilder().setContent('## Anti-Mention'));
-        container.addTextDisplayComponents(new TextDisplayBuilder().setContent('> Prevents mass mention spam and excessive role pings.'));
+        container.addTextDisplayComponents(new TextDisplayBuilder().setContent('Prevents mass mention spam and excessive role pings.'));
         container.addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small));
 
         container.addTextDisplayComponents(
           new TextDisplayBuilder().setContent(
-            `> **Status:** ${am.antiMention.enabled ? '**Active**' : '**Inactive**'}\n` +
-            `> **Threshold:** \`${am.antiMention.threshold} mentions\`\n` +
-            `> **Action:** ${am.antiMention.action === 'timeout' ? '**Timeout (2 min)**' : '**Delete message**'}\n` +
-            `> **Protected Roles:** ${roles}`
+            `**Status:** ${am.antiMention.enabled ? '**Active**' : '**Inactive**'}\n` +
+            `**Threshold:** \`${am.antiMention.threshold} mentions\`\n` +
+            `**Action:** ${am.antiMention.action === 'timeout' ? '**Timeout (2 min)**' : '**Delete message**'}\n` +
+            `**Protected Roles:** ${roles}`
           )
         );
 

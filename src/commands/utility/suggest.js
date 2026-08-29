@@ -25,9 +25,8 @@ module.exports = {
 
     const section = new SectionBuilder()
       .addTextDisplayComponents(
-        new TextDisplayBuilder().setContent(`> ${sug}`),
-        new TextDisplayBuilder().setContent(`\n> **Submitted by:** <@${interaction.user.id}> (\`${interaction.user.tag}\`)`),
-        new TextDisplayBuilder().setContent('> **Status:** Pending Review'),
+        new TextDisplayBuilder().setContent(`>>> ${sug}`),
+        new TextDisplayBuilder().setContent(`\n**Submitted by:** <@${interaction.user.id}> (${interaction.user.tag})\n**Status:** Pending Review`),
       )
       .setThumbnailAccessory(new ThumbnailBuilder({ media: { url: interaction.user.displayAvatarURL({ size: 256 }) } }));
     container.addSectionComponents(section);

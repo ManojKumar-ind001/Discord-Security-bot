@@ -26,9 +26,9 @@ module.exports = {
 
     const section = new SectionBuilder()
       .addTextDisplayComponents(
-        new TextDisplayBuilder().setContent(`> **User:** <@${user.id}> (\`${user.tag}\`)`),
-        new TextDisplayBuilder().setContent(`> **ID:** \`${user.id}\``),
-        new TextDisplayBuilder().setContent(`> [Direct Image Link](${url})`),
+        new TextDisplayBuilder().setContent(`**User:** <@${user.id}> (\`${user.tag}\`)`),
+        new TextDisplayBuilder().setContent(`**ID:** \`${user.id}\``),
+        new TextDisplayBuilder().setContent(`[Direct Image Link](${url})`),
       )
       .setThumbnailAccessory(new ThumbnailBuilder({ media: { url } }));
     container.addSectionComponents(section);

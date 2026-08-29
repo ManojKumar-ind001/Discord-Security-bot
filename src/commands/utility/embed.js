@@ -27,7 +27,7 @@ module.exports = {
       const container = new ContainerBuilder();
       container.addTextDisplayComponents(new TextDisplayBuilder().setContent(`## ${title}`));
       container.addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small));
-      container.addTextDisplayComponents(new TextDisplayBuilder().setContent(`> ${desc}`));
+      container.addTextDisplayComponents(new TextDisplayBuilder().setContent(desc));
       container.addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small));
       container.addTextDisplayComponents(new TextDisplayBuilder().setContent('-# GAMERZ WORKSHOP'));
 

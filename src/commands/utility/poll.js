@@ -47,7 +47,7 @@ module.exports = {
       );
       container.addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small));
 
-      const optLines = opts.map((o, i) => `> **[${labels[i]}] ${o}**\n> Votes: \`${votes[i]}\``).join('\n\n');
+      const optLines = opts.map((o, i) => `**[${labels[i]}] ${o}**\nVotes: \`${votes[i]}\``).join('\n\n');
       container.addTextDisplayComponents(new TextDisplayBuilder().setContent(optLines));
 
       container.addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small));
