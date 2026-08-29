@@ -46,7 +46,7 @@ function logContainer(_color, titleLine, fields, thumbURL = null) {
   const formattedFields = fields.map(f => (f.startsWith('>') ? f : `> ${f}`));
 
   if (thumbURL) {
-    const sectionFields = formattedFields.slice(0, Math.min(4, formattedFields.length));
+    const sectionFields = formattedFields.slice(0, Math.min(3, formattedFields.length));
     const restFields    = formattedFields.slice(sectionFields.length);
 
     const section = new SectionBuilder()

@@ -41,10 +41,18 @@ function buildContainer(_color, titleLine, bodyLines = [], thumb = null, extra =
   const formattedBody = bodyLines.map(l => (l.startsWith('>') || l.startsWith('#') ? l : `> ${l}`));
 
   if (thumb) {
+    const sectionFields = formattedBody.slice(0, Math.min(3, formattedBody.length));
+    const restFields = formattedBody.slice(sectionFields.length);
+
     const section = new SectionBuilder()
-      .addTextDisplayComponents(...formattedBody.map(l => txt(l)))
+      .addTextDisplayComponents(...sectionFields.map(l => txt(l)))
       .setThumbnailAccessory(new ThumbnailBuilder({ media: { url: thumb } }));
     container.addSectionComponents(section);
+
+    if (restFields.length) {
+      container.addSeparatorComponents(sep(true));
+      restFields.forEach(l => container.addTextDisplayComponents(txt(l)));
+    }
   } else {
     formattedBody.forEach(l => container.addTextDisplayComponents(txt(l)));
   }

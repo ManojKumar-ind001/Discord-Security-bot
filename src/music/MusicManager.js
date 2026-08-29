@@ -18,20 +18,27 @@ class MusicManager {
     const plugins = [];
 
     // Spotify Plugin integration if credentials exist
-    if (config.SPOTIFY.CLIENT_ID && config.SPOTIFY.CLIENT_SECRET) {
-      plugins.push(
-        new KazagumoSpotify({
-          clientId: config.SPOTIFY.CLIENT_ID,
-          clientSecret: config.SPOTIFY.CLIENT_SECRET,
-          playlistPageLimit: 4,
-          albumPageLimit: 4,
-          searchLimit: 25,
-          searchMarket: 'US',
-        })
-      );
-      console.log(chalk.green('[MUSIC] Spotify plugin enabled with configured credentials'));
+    const spotifyId = config.SPOTIFY.CLIENT_ID || process.env.SPOTIFY_CLIENT_ID;
+    const spotifySecret = config.SPOTIFY.CLIENT_SECRET || process.env.SPOTIFY_CLIENT_SECRET;
+
+    if (spotifyId && spotifySecret) {
+      try {
+        plugins.push(
+          new KazagumoSpotify({
+            clientId: spotifyId,
+            clientSecret: spotifySecret,
+            playlistPageLimit: 4,
+            albumPageLimit: 4,
+            searchLimit: 25,
+            searchMarket: 'US',
+          })
+        );
+        console.log(chalk.green('[MUSIC] Spotify plugin enabled with configured credentials'));
+      } catch (e) {
+        console.error('[MUSIC] Failed to init Spotify plugin:', e.message);
+      }
     } else {
-      console.log(chalk.yellow('[MUSIC] Spotify credentials not set in .env (falling back to direct YouTube/Lavalink resolver)'));
+      console.log(chalk.yellow('[MUSIC] Spotify credentials not set (falling back to direct resolver)'));
     }
 
     this.kazagumo = new Kazagumo(
@@ -48,7 +55,7 @@ class MusicManager {
       {
         moveOnDisconnect: true,
         resume: true,
-        reconnectTries: 10,
+        reconnectTries: 20,
         reconnectInterval: 5000,
         restTimeout: 10000,
       }
@@ -67,7 +74,7 @@ class MusicManager {
     });
 
     shoukaku.on('error', (name, error) => {
-      console.error(chalk.red(`[LAVALINK] Node "${name}" encountered error:`), error?.message || error);
+      console.error(chalk.red(`[LAVALINK] Node "${name}" error:`), error?.message || error);
     });
 
     shoukaku.on('close', (name, code, reason) => {
@@ -107,7 +114,6 @@ class MusicManager {
     });
 
     this.kazagumo.on('playerEnd', async (player) => {
-      // Clean up previous now playing message
       const channel = this.client.channels.cache.get(player.textId);
       const oldMsgId = player.data.get('nowPlayingMsgId');
       if (channel && oldMsgId) {

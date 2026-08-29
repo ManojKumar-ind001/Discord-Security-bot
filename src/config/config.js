@@ -23,9 +23,21 @@ module.exports = {
   LAVALINK: {
     NODES: [
       {
-        name: process.env.LAVALINK_NAME || 'Main-Node',
-        url: `${process.env.LAVALINK_HOST || 'lava-v4.ajieblogs.eu.org'}:${process.env.LAVALINK_PORT || '443'}`,
-        auth: process.env.LAVALINK_PASSWORD || 'https://dsc.gg/ajidevserver',
+        name: 'Node-1-Primary',
+        url: 'lavalink.jirayu.net:443',
+        auth: 'youshallnotpass',
+        secure: true,
+      },
+      {
+        name: 'Node-2-Backup',
+        url: 'lava-v4.ajieblogs.eu.org:443',
+        auth: 'https://dsc.gg/ajidevserver',
+        secure: true,
+      },
+      {
+        name: 'Node-3-Failover',
+        url: `${process.env.LAVALINK_HOST || 'lavalink.jirayu.net'}:${process.env.LAVALINK_PORT || '443'}`,
+        auth: process.env.LAVALINK_PASSWORD || 'youshallnotpass',
         secure: (process.env.LAVALINK_SECURE || 'true').toLowerCase() === 'true',
       },
     ],
@@ -33,7 +45,7 @@ module.exports = {
     AUTO_LEAVE_TIMEOUT: 60000, // 1 minute when alone
   },
   SPOTIFY: {
-    CLIENT_ID: process.env.SPOTIFY_CLIENT_ID || '',
-    CLIENT_SECRET: process.env.SPOTIFY_CLIENT_SECRET || '',
+    CLIENT_ID: process.env.SPOTIFY_CLIENT_ID || '6893e0c6d0244602ba1df2ca3debe95c',
+    CLIENT_SECRET: process.env.SPOTIFY_CLIENT_SECRET || 'ae7ce82bf8a846f08630ac8ebe9c45d4',
   },
 };
